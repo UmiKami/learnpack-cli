@@ -149,8 +149,9 @@ export default async ({
         rmSync(configObj.config.dirPath + '/_app')
 
         // clean tag gz
-        if (fs.existsSync(configObj.config.dirPath + '/app.tar.gz'))
+        if (fs.existsSync(configObj.config.dirPath + '/app.tar.gz')) {
           fs.unlinkSync(configObj.config.dirPath + '/app.tar.gz')
+        }
 
         // clean configuration object
         // eslint-disable-next-line

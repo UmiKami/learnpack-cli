@@ -1,12 +1,16 @@
 import {expect, test} from '@oclif/test'
 
-describe('start', () => {
+describe.skip('init', () => {
   test
   .stdout()
-  .command(['start'])
-  .it('should show an error if no learn.json file present', ctx => {
+  .command(['init'])
+  .it('should prompt the choices', async (ctx, done) => {
     expect(ctx.stdout).to.contain(
-      '⨉ learn.json file not found on current folder, is this a learnpack package?',
+      `? Is the auto-grading going to be isolated or incremental? › - Use arrow-keys. Return to submit.
+      ❯   Incremental: Build on top of each other like a tutorial
+          Isolated: Small isolated exercises
+          No grading: No feedback or testing whatsoever`,
     )
+    done()
   })
 })
