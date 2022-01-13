@@ -45,9 +45,6 @@ describe('clean', () => {
   })
   .command(['clean'])
   .it('should remove .learn/dist folder', () => {
-    /* expect(fs.existsSync(".learn/dist")).to.be.false;
-      expect(fs.existsSync(".learn/_app")).to.be.false;
-      expect(fs.existsSync("app.tar.gz")).to.be.false; */
     expect(fs.existsSync('.learn/dist')).to.be.false
     restoreMockFolders()
   })
