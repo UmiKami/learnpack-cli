@@ -31,18 +31,23 @@ export default async function (
   // add all needed endpoints
   await addRoutes(app, configObj, configManager)
 
-  server.listen(config?.port, function () {
+  const PORT = process.env.NODE_ENV === 'test' ? '3004' : config?.port
+
+  server.listen(PORT, function () {
     Console.success(
       'Exercises are running 😃 Open your browser to start practicing!',
     )
     Console.success('\n            Open the exercise on this link:')
     if (config?.editor.mode === 'gitpod')
-      Console.log(
-        `            https://${config.port}-${config.address.slice(8)}`,
-      )
+      Console.log(`            https://${PORT}-${config.address.slice(8)}`)
     else {
-      Console.log(`            ${config?.address}:${config?.port}`)
-      cli.open(`${config?.address}:${config?.port}`)
+      Console.log(`            ${config?.address}:${PORT}`)
+
+      if (process.env.NODE_ENV !== 'test') {
+        cli.open(`${config?.address}:${PORT}`)
+      } else {
+        server.close()
+      }
     }
   })
 

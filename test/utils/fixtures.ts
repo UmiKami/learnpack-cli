@@ -13,7 +13,7 @@ export const CONFIG_SAMPLE = {
   publicUrl: null,
   language: 'auto',
   grading: 'incremental',
-  exercisesPath: './',
+  exercisesPath: './exercises',
   webpackTemplate: null,
   disableGrading: false,
   disabledActions: [],

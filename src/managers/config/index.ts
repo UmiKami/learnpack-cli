@@ -220,6 +220,7 @@ export default async ({
         .readdirSync(source)
         .map(name => path.join(source, name))
         .filter(isDirectory)
+
       // add the .learn folder
       if (!fs.existsSync(confPath.base))
         fs.mkdirSync(confPath.base)
@@ -235,6 +236,9 @@ export default async ({
         const grupedByDirectory = getDirectories(
           configObj.config.exercisesPath,
         )
+
+        console.log('gd', grupedByDirectory)
+
         configObj.exercises =
           grupedByDirectory.length > 0 ?
             grupedByDirectory.map((path, position) =>
