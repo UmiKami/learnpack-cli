@@ -21,7 +21,6 @@ describe('start', () => {
       exercises: {
         '01.12-hello-world': {},
       },
-      '.learn': {},
     })
   })
   .command(['start'])
