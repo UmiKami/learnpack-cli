@@ -143,4 +143,38 @@ describe('start', () => {
       })
     },
   )
+
+  test
+  .nock(
+    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}`,
+    api => (api as any).get('/dist').reply(200),
+  )
+  .nock(
+    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`,
+    api =>
+      (api as any)
+      .get('/app.tar.gz?raw=true')
+      .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
+        'content-type': 'application/octet-stream',
+      }),
+  )
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      exercises: {
+        '01.12-hello-world': {},
+      },
+    })
+  })
+  .command(['start'])
+  .it('The route /config should return the config file', (_, done) => {
+    (chai as any)
+    .request('http://localhost:3004')
+    .get('/config')
+    .end((_: any, res: any) => {
+      expect(res.body.config).not.to.be.undefined
+      restoreMockFolders()
+      done()
+    })
+  })
 })
