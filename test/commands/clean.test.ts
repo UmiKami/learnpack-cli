@@ -3,7 +3,7 @@ import {mockFolders, restoreMockFolders} from '../utils'
 import {CONFIG_SAMPLE} from '../utils/fixtures'
 import * as fs from 'fs'
 
-describe.skip('clean', () => {
+describe('clean', () => {
   test
   .stdout()
   .command(['clean'])
