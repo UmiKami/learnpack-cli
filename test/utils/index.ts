@@ -1,5 +1,6 @@
 import * as mockfs from 'mock-fs'
 import * as path from 'path'
+import * as fs from 'fs'
 
 export const mockFolders = (folders: any) => {
   const mockfsConf = {
@@ -20,4 +21,8 @@ export const mockFolders = (folders: any) => {
 
 export const restoreMockFolders = () => {
   mockfs.restore()
+}
+
+export const isDirEmpty = (dirname: string) => {
+  return fs.readdirSync(dirname).length === 0
 }

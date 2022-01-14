@@ -1,10 +1,12 @@
+export const EDITOR_VERSION = '1.0.72'
+
 export const CONFIG_SAMPLE = {
   port: 3000,
   address: 'http://localhost',
   editor: {
-    mode: null,
+    mode: 'standalone',
     agent: null,
-    version: null,
+    version: EDITOR_VERSION,
   },
   dirPath: './.learn',
   configPath: './learn.json',

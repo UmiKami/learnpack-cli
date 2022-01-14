@@ -39,7 +39,7 @@ export const downloadEditor = async (
   )
   if (!resp2.ok)
     throw InternalError(
-      `Coding Editor v${version} was not found on learnpack repository, check the config.editor.version property on learn.json`,
+      `Coding Editor ${version} was not found on learnpack repository, check the config.editor.version property on learn.json`,
     )
 
   Console.info(
