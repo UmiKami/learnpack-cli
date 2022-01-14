@@ -6,6 +6,8 @@ import * as http from 'http'
 import {IConfigObj} from '../../models/config'
 import {IConfigManager} from '../../models/config-manager'
 
+export let TEST_SERVER: http.Server
+
 export default async function (
   configObj: IConfigObj,
   configManager: IConfigManager,
@@ -46,7 +48,7 @@ export default async function (
       if (process.env.NODE_ENV !== 'test') {
         cli.open(`${config?.address}:${PORT}`)
       } else {
-        server.close()
+        TEST_SERVER = server
       }
     }
   })
