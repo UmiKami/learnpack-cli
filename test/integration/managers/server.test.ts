@@ -8,7 +8,7 @@ import {
   buildExpectedConfig,
 } from '../../utils'
 import {CONFIG_SAMPLE} from '../../utils/fixtures'
-import {TGrading} from '../../../src/models/config'
+import {IConfigObj, TGrading} from '../../../src/models/config'
 /* eslint-disable @typescript-eslint/no-var-requires */
 const chaiHttp = require('chai-http')
 
@@ -16,6 +16,7 @@ chai.use(chaiHttp)
 
 describe('server', () => {
   let server: any = null
+  let configObject: IConfigObj
   before(async () => {
     mockFolders({
       'learn.json': JSON.stringify(CONFIG_SAMPLE),
@@ -32,7 +33,7 @@ describe('server', () => {
       disableGrading: CONFIG_SAMPLE.disableGrading,
       version: CONFIG_SAMPLE.editor.version,
     })
-    const configObject = thisConfigManager?.get()
+    configObject = thisConfigManager?.get()
     server = await createServer(configObject, thisConfigManager)
   })
 
@@ -47,6 +48,18 @@ describe('server', () => {
       const expectedConfig = buildExpectedConfig(CONFIG_SAMPLE)
 
       expect(config).to.deep.equal(expectedConfig)
+      done()
+    })
+  })
+
+  it('GET /exercise should return the exercises', done => {
+    (chai as any)
+    .request('http://localhost:3004')
+    .get('/exercise')
+    .end((_: any, res: any) => {
+      const exercises = res.body
+
+      expect(exercises).to.deep.equal(configObject.exercises)
       done()
     })
   })

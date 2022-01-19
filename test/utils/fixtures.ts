@@ -16,6 +16,12 @@ export const CONFIG_SAMPLE = {
   language: 'auto',
   grading: 'incremental',
   exercisesPath: './exercises',
+  exercises: [
+    {
+      slug: 'hello-world',
+      path: './exercises/hello-world',
+    },
+  ],
   webpackTemplate: null,
   disableGrading: false,
   disabledActions: [],
