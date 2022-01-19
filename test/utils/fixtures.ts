@@ -1,5 +1,7 @@
 export const EDITOR_VERSION = '1.0.72'
 
+export const EXERCISE_SLUG = 'hello-world'
+
 export const CONFIG_SAMPLE = {
   port: 3000,
   address: 'http://localhost',
@@ -18,8 +20,18 @@ export const CONFIG_SAMPLE = {
   exercisesPath: './exercises',
   exercises: [
     {
-      slug: 'hello-world',
-      path: './exercises/hello-world',
+      slug: EXERCISE_SLUG,
+      path: `exercises/${EXERCISE_SLUG}`,
+      entry: null,
+      title: 'hello-world',
+      graded: false,
+      files: [
+        {
+          path: `exercises/${EXERCISE_SLUG}/README.md`,
+          name: 'README.md',
+          hidden: true,
+        },
+      ],
     },
   ],
   webpackTemplate: null,

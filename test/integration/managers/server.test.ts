@@ -7,7 +7,7 @@ import {
   restoreMockFolders,
   buildExpectedConfig,
 } from '../../utils'
-import {CONFIG_SAMPLE} from '../../utils/fixtures'
+import {CONFIG_SAMPLE, EXERCISE_SLUG} from '../../utils/fixtures'
 import {IConfigObj, TGrading} from '../../../src/models/config'
 /* eslint-disable @typescript-eslint/no-var-requires */
 const chaiHttp = require('chai-http')
@@ -24,7 +24,9 @@ describe('server', () => {
         '.session': {},
       },
       exercises: {
-        '01.12-hello-world': {},
+        [EXERCISE_SLUG]: {
+          'README.md': 'This is the content of the README.md file',
+        },
       },
     })
 
@@ -63,6 +65,30 @@ describe('server', () => {
       done()
     })
   })
+
+  /* it("GET /exercise/:slug/readme should return the content of README.md file", (done) => {
+    (chai as any)
+      .request("http://localhost:3004")
+      .get(`/exercise/${EXERCISE_SLUG}/readme`)
+      .end((_: any, res: any) => {
+        const { body } = res.body;
+
+        expect(body).to.equal("This is the content of the README.md file");
+        done();
+      });
+  });
+
+  it("GET /exercise/:slug should return the content of the exercise", (done) => {
+    (chai as any)
+      .request("http://localhost:3004")
+      .get(`/exercise/${EXERCISE_SLUG}`)
+      .end((_: any, res: any) => {
+        const { body } = res.body;
+
+        expect(body).to.equal({});
+        done();
+      });
+  }); */
 
   after(() => {
     restoreMockFolders()
