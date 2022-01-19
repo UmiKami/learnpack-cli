@@ -8,6 +8,7 @@ import {detect, filterFiles} from '../config/exercise'
 import {IFile} from '../../models/file'
 import {IConfigObj} from '../../models/config'
 import {IConfigManager} from '../../models/config-manager'
+import {IExercise} from '../../models/exercise-obj'
 
 const withHandler =
   (func: (req: express.Request, res: express.Response) => void) =>
@@ -56,10 +57,16 @@ export default async function (
         {params: {slug}, query: {lang}}: express.Request,
         res: express.Response,
       ) => {
-        const readme = configManager
-        .getExercise(slug)
-        .getReadme((lang as string) || null)
-        res.json(readme)
+        console.log(configManager.getExercise(slug))
+
+        const excercise: IExercise = configManager.getExercise(slug)
+
+        if (excercise) {
+          const readme = excercise.getReadme((lang as string) || null)
+          res.json(readme)
+        } else {
+          res.status(400)
+        }
       },
     ),
   )

@@ -6,9 +6,11 @@ import {
   mockFolders,
   restoreMockFolders,
   buildExpectedConfig,
+  exerciseToPlainJson,
 } from '../../utils'
 import {CONFIG_SAMPLE, EXERCISE_SLUG} from '../../utils/fixtures'
 import {IConfigObj, TGrading} from '../../../src/models/config'
+import {IExercise} from '../../../src/models/exercise-obj'
 /* eslint-disable @typescript-eslint/no-var-requires */
 const chaiHttp = require('chai-http')
 
@@ -35,6 +37,10 @@ describe('server', () => {
       disableGrading: CONFIG_SAMPLE.disableGrading,
       version: CONFIG_SAMPLE.editor.version,
     })
+
+    // build exerises
+    thisConfigManager?.buildIndex()
+
     configObject = thisConfigManager?.get()
     server = await createServer(configObject, thisConfigManager)
   })
@@ -61,37 +67,48 @@ describe('server', () => {
     .end((_: any, res: any) => {
       const exercises = res.body
 
-      expect(exercises).to.deep.equal(configObject.exercises)
+      expect(exercises).to.deep.equal(
+        (configObject.exercises || []).map(exerciseToPlainJson),
+      )
+
       done()
     })
   })
 
-  /* it("GET /exercise/:slug/readme should return the content of README.md file", (done) => {
+  it('GET /exercise/:slug/readme should return the content of README.md file', done => {
     (chai as any)
-      .request("http://localhost:3004")
-      .get(`/exercise/${EXERCISE_SLUG}/readme`)
-      .end((_: any, res: any) => {
-        const { body } = res.body;
+    .request('http://localhost:3004')
+    .get(`/exercise/${EXERCISE_SLUG}/readme`)
+    .end((_: any, res: any) => {
+      const {body} = res.body
 
-        expect(body).to.equal("This is the content of the README.md file");
-        done();
-      });
-  });
+      expect(body).to.equal('This is the content of the README.md file')
+      done()
+    })
+  })
 
-  it("GET /exercise/:slug should return the content of the exercise", (done) => {
+  it('GET /exercise/:slug should return the content of the exercise', done => {
     (chai as any)
-      .request("http://localhost:3004")
-      .get(`/exercise/${EXERCISE_SLUG}`)
-      .end((_: any, res: any) => {
-        const { body } = res.body;
+    .request('http://localhost:3004')
+    .get(`/exercise/${EXERCISE_SLUG}`)
+    .end((_: any, res: any) => {
+      const exercise = res.body
 
-        expect(body).to.equal({});
-        done();
-      });
-  }); */
+      const exerciseFound = configObject?.exercises?.find(
+        exercise => exercise.slug === EXERCISE_SLUG,
+      )
+
+      const expectedExercise = exerciseToPlainJson(
+          exerciseFound as IExercise,
+      )
+
+      expect(exercise).to.deep.equal(expectedExercise)
+      done()
+    })
+  })
 
   after(() => {
-    restoreMockFolders()
+    // restoreMockFolders();
     server.close()
   })
 })

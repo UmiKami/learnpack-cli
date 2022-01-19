@@ -1,6 +1,7 @@
 import * as mockfs from 'mock-fs'
 import * as path from 'path'
 import * as fs from 'fs'
+import {IExercise} from '../../src/models/exercise-obj'
 
 export const mockFolders = (folders: any) => {
   const mockfsConf = {
@@ -52,10 +53,23 @@ export const buildExpectedConfig = (config: any) => {
       configPath: `${configObj.configPath.replace('./', '')}`,
       outputPath: `${configObj.outputPath.replace('./', '')}`,
       actions: ['build', 'test', 'reset'],
+      translations: [],
       editor: {
         mode: configObj.editor.mode,
         version: configObj.editor.version,
       },
     },
   }
+}
+
+export const exerciseToPlainJson = (exercise: IExercise) => {
+  const exerciseCopy = {...exercise}
+  delete exerciseCopy.done
+
+  delete exerciseCopy.getFile
+  delete exerciseCopy.getReadme
+  delete exerciseCopy.getTestReport
+  delete exerciseCopy.saveFile
+
+  return exerciseCopy
 }
