@@ -26,3 +26,35 @@ export const restoreMockFolders = () => {
 export const isDirEmpty = (dirname: string) => {
   return fs.readdirSync(dirname).length === 0
 }
+
+export const buildExpectedConfig = (config: any) => {
+  const configObj: any = {
+    ...config,
+  }
+
+  for (const key of [
+    'description',
+    'difficulty',
+    'disabledActions',
+    'duration',
+    'language',
+    'slug',
+    'title',
+    'publicUrl',
+  ])
+    delete configObj[key]
+
+  return {
+    ...config,
+    config: {
+      ...configObj,
+      configPath: `${configObj.configPath.replace('./', '')}`,
+      outputPath: `${configObj.outputPath.replace('./', '')}`,
+      actions: ['build', 'test', 'reset'],
+      editor: {
+        mode: configObj.editor.mode,
+        version: configObj.editor.version,
+      },
+    },
+  }
+}
