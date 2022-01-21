@@ -19,7 +19,8 @@ import {IStartFlags} from '../models/flags'
 } from "../utils/errors.js"; */
 
 export default class StartCommand extends SessionCommand {
-  static description = 'Runs a small server with all the exercise instructions'
+  static description =
+    'Runs a small server with all the exercise instructions'
 
   static flags = {
     ...SessionCommand.flags,
