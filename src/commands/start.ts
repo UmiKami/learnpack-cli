@@ -20,6 +20,7 @@ import {IStartFlags} from '../models/flags'
 
 export default class StartCommand extends SessionCommand {
   static description = 'Runs a small server with all the exercise instructions'
+
   static flags = {
     ...SessionCommand.flags,
     port: flags.string({char: 'p', description: 'server port'}),
