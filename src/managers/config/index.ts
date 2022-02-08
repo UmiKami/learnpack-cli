@@ -148,9 +148,25 @@ export default async ({
         rmSync(configObj.config.outputPath)
         rmSync(configObj.config.dirPath + '/_app')
 
+        if (fs.existsSync(configObj.config.dirPath + '/reports')) {
+          rmSync(configObj.config.dirPath + '/reports')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/resets')) {
+          rmSync(configObj.config.dirPath + '/resets')
+        }
+
         // clean tag gz
         if (fs.existsSync(configObj.config.dirPath + '/app.tar.gz')) {
           fs.unlinkSync(configObj.config.dirPath + '/app.tar.gz')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/config.json')) {
+          fs.unlinkSync(configObj.config.dirPath + '/config.json')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/vscode_queue.json')) {
+          fs.unlinkSync(configObj.config.dirPath + '/vscode_queue.json')
         }
 
         // clean configuration object
@@ -236,8 +252,6 @@ export default async ({
         const grupedByDirectory = getDirectories(
           configObj.config.exercisesPath,
         )
-
-        console.log('gd', grupedByDirectory)
 
         configObj.exercises =
           grupedByDirectory.length > 0 ?

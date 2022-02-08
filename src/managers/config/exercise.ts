@@ -9,7 +9,7 @@ import {IFile} from '../../models/file'
 import {IExercise} from '../../models/exercise-obj'
 
 // eslint-disable-next-line
-const frontMatter = require('front-matter');
+const frontMatter = require("front-matter");
 
 export const exercise = (
   path: string,
@@ -23,10 +23,6 @@ export const exercise = (
     Console.error(
       `Exercise directory ${slug} has an invalid name, it has to start with two or three digits followed by words separated by underscors or hyphen (no white spaces). e.g: 01.12-hello-world`,
     )
-    Console.help(
-      `Verify that the folder ${slug} starts with a number and it does not contain white spaces or weird characters.`,
-    )
-    throw new Error('Error building the exercise index')
   }
 
   // get all the files
@@ -159,11 +155,9 @@ export const exercise = (
 }
 
 export const validateExerciseDirectoryName = (str: string) => {
-  if (str === './') {
+  if (str === './')
     return true
-  }
-
-  const regex = /^\d{2,3}(?:\.\d{1,2}?)?-[A-z](?:-|_?[\dA-z]*)*$/
+  const regex = /^(\d{2,3}(\.\d{1,2})?-([\dA-Za-z]+(-|_)?)+)$/
   return regex.test(str)
 }
 

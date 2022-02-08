@@ -73,6 +73,42 @@ describe('clean', () => {
     mockFolders({
       'learn.json': JSON.stringify(CONFIG_SAMPLE),
       '.learn': {
+        reports: {
+          /** empty directory */
+        },
+      },
+    })
+  })
+  .command(['clean'])
+  .it('should remove .learn/reports folder', () => {
+    expect(fs.existsSync('.learn/reports')).to.be.false
+    restoreMockFolders()
+  })
+
+  test
+  .stdout()
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      '.learn': {
+        resets: {
+          /** empty directory */
+        },
+      },
+    })
+  })
+  .command(['clean'])
+  .it('should remove .learn/resets folder', () => {
+    expect(fs.existsSync('.learn/resets')).to.be.false
+    restoreMockFolders()
+  })
+
+  test
+  .stdout()
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      '.learn': {
         'app.tar.gz': 'whatever',
       },
     })
@@ -80,6 +116,38 @@ describe('clean', () => {
   .command(['clean'])
   .it('should remove .learn/app.tar.gz file', () => {
     expect(fs.existsSync('.learn/app.tar.gz')).to.be.false
+    restoreMockFolders()
+  })
+
+  test
+  .stdout()
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      '.learn': {
+        'config.json': 'whatever',
+      },
+    })
+  })
+  .command(['clean'])
+  .it('should remove .learn/config.json file', () => {
+    expect(fs.existsSync('.learn/config.json')).to.be.false
+    restoreMockFolders()
+  })
+
+  test
+  .stdout()
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      '.learn': {
+        'vscode_queue.json': 'whatever',
+      },
+    })
+  })
+  .command(['clean'])
+  .it('should remove .learn/vscode_queue.json file', () => {
+    expect(fs.existsSync('.learn/vscode_queue.json')).to.be.false
     restoreMockFolders()
   })
 })

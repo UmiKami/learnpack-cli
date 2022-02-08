@@ -46,5 +46,6 @@ export interface IConfigObj {
   exercises?: Array<IExercise>;
   grading?: TGrading;
   repository?: string;
+  description?: string;
   slug?: string;
 }
