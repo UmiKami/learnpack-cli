@@ -11,6 +11,7 @@ import createServer from '../managers/server'
 import {IGitpodData} from '../models/gitpod-data'
 import {IExercise} from '../models/exercise'
 import {IStartFlags} from '../models/flags'
+import {prioritizeHTMLFile} from '../utils/misc'
 
 /* import {
   ValidationError,
@@ -106,7 +107,8 @@ export default class StartCommand extends SessionCommand {
 
         socket.on('gitpod-open', (data: IGitpodData) => {
           Console.debug('Opening these files on gitpod: ', data)
-          Gitpod.openFiles(data.files)
+          const files = prioritizeHTMLFile(data.files)
+          Gitpod.openFiles(files)
         })
 
         socket.on('reset', (exercise: IExercise) => {
