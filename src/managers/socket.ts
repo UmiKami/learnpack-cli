@@ -27,7 +27,7 @@ const SocketManager: ISocket = {
     if (
       actions.includes('test') &&
       (this.config?.disableGrading ||
-        this.config?.disableActions?.includes('test'))
+        this.config?.disabledActions?.includes('test'))
     ) {
       actions = actions.filter((a: TAction) => a !== 'test')
     }
@@ -147,6 +147,10 @@ const SocketManager: ISocket = {
     if (this.config?.grading === 'incremental') {
       this.removeAllowed('reset')
     }
+
+    Console.debug('dactions', this.config)
+    // eslint-disable-next-line
+    this.config?.disabledActions?.forEach((a) => this.removeAllowed(a));
 
     this.socket?.emit('compiler', {
       action,

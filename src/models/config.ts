@@ -33,7 +33,7 @@ export interface IConfig {
   exercisesPath: string;
   actions: Array<any>;
   disableGrading: boolean;
-  disableActions?: Array<string>;
+  disabledActions?: Array<string>;
   compiler: TCompiler;
   exercises?: Array<IExercise>;
   runHook: (...agrs: Array<any>) => void;

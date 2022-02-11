@@ -122,14 +122,14 @@ export default async function (
         if (
           !exercise.graded ||
           config?.disableGrading ||
-          config?.disableActions?.includes('test')
+          config?.disabledActions?.includes('test')
         ) {
           socket.removeAllowed('test')
         } else {
           socket.addAllowed('test')
         }
 
-        if (!exercise.entry || config?.disableActions?.includes('build')) {
+        if (!exercise.entry || config?.disabledActions?.includes('build')) {
           socket.removeAllowed('build')
         } else {
           socket.addAllowed('build')
@@ -141,7 +141,7 @@ export default async function (
               !f.name.toLowerCase().includes('readme.') &&
               !f.name.toLowerCase().includes('test.'),
           ).length === 0 ||
-          config?.disableActions?.includes('reset')
+          config?.disabledActions?.includes('reset')
         ) {
           socket.removeAllowed('reset')
         } else {
