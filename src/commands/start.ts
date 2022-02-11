@@ -81,7 +81,7 @@ export default class StartCommand extends SessionCommand {
 
       Console.debug(
         `Grading: ${config?.grading} ${
-          config?.disable_grading ? '(disabled)' : ''
+          config?.disableActions?.includes('test') ? '(disabled)' : ''
         }, editor: ${config?.editor.mode} ${config?.editor.version}, for ${
           Array.isArray(config?.exercises) ? config?.exercises.length : 0
         } exercises found`,
@@ -172,7 +172,7 @@ export default class StartCommand extends SessionCommand {
             return
           }
 
-          if (config.disableGrading) {
+          if (config?.disableActions!.includes('test')) {
             socket.ready('Grading is disabled on configuration')
             return true
           }

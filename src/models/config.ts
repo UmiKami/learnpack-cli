@@ -32,8 +32,8 @@ export interface IConfig {
   editor: IEditor;
   exercisesPath: string;
   actions: Array<any>;
-  disable_grading?: boolean;
-  disableGrading?: boolean;
+  disableGrading: boolean;
+  disableActions?: Array<string>;
   compiler: TCompiler;
   exercises?: Array<IExercise>;
   runHook: (...agrs: Array<any>) => void;
