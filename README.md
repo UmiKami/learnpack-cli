@@ -1,5 +1,4 @@
-learnpack
-=========
+# learnpack
 
 Create, sell or download and take learning amazing learning packages
 
@@ -9,39 +8,64 @@ Create, sell or download and take learning amazing learning packages
 [![License](https://img.shields.io/npm/l/learnpack.svg)](https://github.com/learnpack/learnpack-cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g learnpack
 $ learnpack COMMAND
 running command...
 $ learnpack (-v|--version|version)
-learnpack/0.0.88 darwin-x64 node-v10.17.0
+learnpack/0.1.24 darwin-x64 node-v10.17.0
 $ learnpack --help [COMMAND]
 USAGE
   $ learnpack COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`learnpack clean`](#learnpack-clean)
-* [`learnpack download [PACKAGE]`](#learnpack-download-package)
-* [`learnpack hello`](#learnpack-hello)
-* [`learnpack help [COMMAND]`](#learnpack-help-command)
-* [`learnpack init`](#learnpack-init)
-* [`learnpack login [PACKAGE]`](#learnpack-login-package)
-* [`learnpack logout [PACKAGE]`](#learnpack-logout-package)
-* [`learnpack plugins`](#learnpack-plugins)
-* [`learnpack plugins:install PLUGIN...`](#learnpack-pluginsinstall-plugin)
-* [`learnpack plugins:link PLUGIN`](#learnpack-pluginslink-plugin)
-* [`learnpack plugins:uninstall PLUGIN...`](#learnpack-pluginsuninstall-plugin)
-* [`learnpack plugins:update`](#learnpack-pluginsupdate)
-* [`learnpack publish [PACKAGE]`](#learnpack-publish-package)
-* [`learnpack start`](#learnpack-start)
+
+- [`learnpack audit`](#learnpack-audit)
+- [`learnpack clean`](#learnpack-clean)
+- [`learnpack download [PACKAGE]`](#learnpack-download-package)
+- [`learnpack hello`](#learnpack-hello)
+- [`learnpack help [COMMAND]`](#learnpack-help-command)
+- [`learnpack init`](#learnpack-init)
+- [`learnpack login [PACKAGE]`](#learnpack-login-package)
+- [`learnpack logout [PACKAGE]`](#learnpack-logout-package)
+- [`learnpack plugins`](#learnpack-plugins)
+- [`learnpack plugins:install PLUGIN...`](#learnpack-pluginsinstall-plugin)
+- [`learnpack plugins:link PLUGIN`](#learnpack-pluginslink-plugin)
+- [`learnpack plugins:uninstall PLUGIN...`](#learnpack-pluginsuninstall-plugin)
+- [`learnpack plugins:update`](#learnpack-pluginsupdate)
+- [`learnpack publish [PACKAGE]`](#learnpack-publish-package)
+- [`learnpack start`](#learnpack-start)
+- [`learnpack test [EXERCISESLUG]`](#learnpack-test-exerciseslug)
+
+## `learnpack audit`
+
+Check if the configuration object has slug, description and repository property
+
+```
+USAGE
+  $ learnpack audit
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/audit.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/audit.js)_
 
 ## `learnpack clean`
 
@@ -56,7 +80,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/clean.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/clean.js)_
+_See code: [src/commands/clean.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/clean.js)_
 
 ## `learnpack download [PACKAGE]`
 
@@ -74,7 +98,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/download.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/download.js)_
+_See code: [src/commands/download.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/download.js)_
 
 ## `learnpack hello`
 
@@ -92,7 +116,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/hello.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/hello.js)_
+_See code: [src/commands/hello.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/hello.js)_
 
 ## `learnpack help [COMMAND]`
 
@@ -123,7 +147,7 @@ OPTIONS
   -h, --grading  show CLI help
 ```
 
-_See code: [src/commands/init.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/init.js)_
+_See code: [src/commands/init.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/init.js)_
 
 ## `learnpack login [PACKAGE]`
 
@@ -141,7 +165,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/login.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/login.js)_
 
 ## `learnpack logout [PACKAGE]`
 
@@ -159,7 +183,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/logout.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/logout.js)_
 
 ## `learnpack plugins`
 
@@ -199,15 +223,15 @@ DESCRIPTION
 
   Installation of a user-installed plugin will override a core plugin.
 
-  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command 
-  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in 
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
 
 ALIASES
   $ learnpack plugins:add
 
 EXAMPLES
-  $ learnpack plugins:install myplugin 
+  $ learnpack plugins:install myplugin
   $ learnpack plugins:install https://github.com/someuser/someplugin
   $ learnpack plugins:install someuser/someplugin
 ```
@@ -232,7 +256,7 @@ OPTIONS
 DESCRIPTION
   Installation of a linked plugin will override a user-installed or core plugin.
 
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
   command will override the user-installed or core plugin implementation. This is useful for development work.
 
 EXAMPLE
@@ -294,7 +318,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/publish.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/publish.js)_
+_See code: [src/commands/publish.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/publish.js)_
 
 ## `learnpack start`
 
@@ -307,13 +331,33 @@ USAGE
 OPTIONS
   -d, --debug                         debugger mode for more verbage
   -d, --disableGrading                disble grading functionality
-  -e, --editor=standalone|gitpod      [standalone, gitpod]
   -g, --grading=isolated|incremental  [isolated, incremental]
   -h, --host=host                     server host
+
+  -m, --mode=standalone|preview       Load a standalone editor or just the preview to be embeded in another editor:
+                                      Choices: [standalone, preview]
+
   -p, --port=port                     server port
+
   -v, --version=version               E.g: 1.0.1
+
   -w, --watch                         Watch for file changes
 ```
 
-_See code: [src/commands/start.js](https://github.com/learnpack/learnpack-cli/blob/v0.0.88/src/commands/start.js)_
+_See code: [src/commands/start.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/start.js)_
+
+## `learnpack test [EXERCISESLUG]`
+
+Test exercises
+
+```
+USAGE
+  $ learnpack test [EXERCISESLUG]
+
+ARGUMENTS
+  EXERCISESLUG  The name of the exercise to test
+```
+
+_See code: [src/commands/test.js](https://github.com/learnpack/learnpack-cli/blob/v0.1.24/src/commands/test.js)_
+
 <!-- commandsstop -->
