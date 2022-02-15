@@ -170,6 +170,25 @@ class AuditCommand extends SessionCommand {
               for (const img in obj) {
                 if (Object.prototype.hasOwnProperty.call(obj, img)) {
                   counter.images.total++
+                  if (
+                    fs.existsSync(
+                      `${config.config?.dirPath}/assets${obj[img].mdUrl
+                      .split('?')
+                      .shift()}`,
+                    )
+                  ) {
+                    const relativePath = path
+                    .relative(
+                      exercise.path.replace(/\\/gm, '/'),
+                      `${config.config?.dirPath}/assets/${obj[img].mdUrl}`,
+                    )
+                    .replace(/\\/gm, '/')
+                    warnings.push({
+                      exercise: exercise.title,
+                      msg: `On this exercise you have an image with an absolute path "${obj[img].absUrl}". We recommend you to replace it by the relative path: "${relativePath}".`,
+                    })
+                  }
+
                   try {
                     // eslint-disable-next-line
                     let res = await fetch(obj[img].absUrl, { method: "HEAD" });
@@ -232,6 +251,8 @@ class AuditCommand extends SessionCommand {
         return false
       }
 
+      Console.log('config', config)
+
       Console.info(' Checking if the config file is fine...')
       // These two lines check if the 'slug' property is inside the configuration object.
       Console.debug(
@@ -293,12 +314,8 @@ class AuditCommand extends SessionCommand {
               exercise.language === 'python3' ||
               exercise.language === 'python'
             ) {
-              for (const f of exercise.files
-              .map(f => f)) {
-                if (
-                  f.path.includes('test.py') ||
-                    f.path.includes('tests.py')
-                ) {
+              for (const f of exercise.files.map(f => f)) {
+                if (f.path.includes('test.py') || f.path.includes('tests.py')) {
                   const content = fs.readFileSync(f.path).toString()
                   const isEmpty = Audit.checkForEmptySpaces(content)
                   if (isEmpty || !content)
@@ -309,12 +326,8 @@ class AuditCommand extends SessionCommand {
                 }
               }
             } else {
-              for (const f of exercise.files
-              .map(f => f)) {
-                if (
-                  f.path.includes('test.js') ||
-                    f.path.includes('tests.js')
-                ) {
+              for (const f of exercise.files.map(f => f)) {
+                if (f.path.includes('test.js') || f.path.includes('tests.js')) {
                   const content = fs.readFileSync(f.path).toString()
                   const isEmpty: boolean = Audit.checkForEmptySpaces(content)
                   if (isEmpty || !content)
@@ -336,7 +349,11 @@ class AuditCommand extends SessionCommand {
                 const files: any[] = []
                 const findResultPromises = []
                 for (const file of exercise.files) {
-                  const found = find(file, exercise.translations[lang], exercise)
+                  const found = find(
+                    file,
+                    exercise.translations[lang],
+                    exercise,
+                  )
                   findResultPromises.push(found)
                 }
                 // eslint-disable-next-line
@@ -354,7 +371,7 @@ class AuditCommand extends SessionCommand {
                 if (!files.includes(true))
                   errors.push({
                     exercise: exercise.title,
-                    msg: 'This exercise doesn\'t have a README.md file.',
+                    msg: "This exercise doesn't have a README.md file.",
                   })
               }
             }
