@@ -160,6 +160,10 @@ export default async ({
           rmSync(configObj.config.dirPath + '/resets')
         }
 
+        if (fs.existsSync(configObj.config.dirPath + '/.session')) {
+          rmSync(configObj.config.dirPath + '/.session')
+        }
+
         // clean tag gz
         if (fs.existsSync(configObj.config.dirPath + '/app.tar.gz')) {
           fs.unlinkSync(configObj.config.dirPath + '/app.tar.gz')

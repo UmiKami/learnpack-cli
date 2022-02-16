@@ -109,6 +109,24 @@ describe('clean', () => {
     mockFolders({
       'learn.json': JSON.stringify(CONFIG_SAMPLE),
       '.learn': {
+        '.session': {
+          /** empty directory */
+        },
+      },
+    })
+  })
+  .command(['clean'])
+  .it('should remove .learn/.session folder', () => {
+    expect(fs.existsSync('.learn/.session')).to.be.false
+    restoreMockFolders()
+  })
+
+  test
+  .stdout()
+  .do(() => {
+    mockFolders({
+      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      '.learn': {
         'app.tar.gz': 'whatever',
       },
     })
