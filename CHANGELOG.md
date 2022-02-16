@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `learnpack test` command ready to start testing it.
 - Added loading priority on files, html opens last to make it visible.
 
-### February 15, 2022
+### February 16, 2022
 
 - Added functionality to remove the `.session` folder from the `.learn` directory with the `learnpack clean` command.
 - Added test to check that the `.session` folder has been removed from the `.learn` directory when using `learnpack clean` command.
+- Migrate from isomorphic-fecth to node-fetch.
+- Removed isomorphic-fetch from the package.json.

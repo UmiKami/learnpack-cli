@@ -4,7 +4,6 @@ import * as shell from 'shelljs'
 import Console from '../../utils/console'
 import watch from '../../utils/watcher'
 import Gitpod from '../gitpod'
-import * as fetch from 'isomorphic-fetch'
 import {
   ValidationError,
   NotFoundError /* , InternalError */,
@@ -21,6 +20,9 @@ import {
 } from '../../models/config-manager'
 import {IExercise} from '../../models/exercise-obj'
 /* exercise folder name standard */
+
+// eslint-disable-next-line
+const fetch = require("node-fetch");
 
 const getConfigPath = () => {
   const possibleFileNames = [

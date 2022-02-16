@@ -1,7 +1,9 @@
-import * as fetch from 'isomorphic-fetch'
 import Console from './console'
 
 import {ISolution, IError} from '../models/errors'
+
+// eslint-disable-next-line
+const fetch = require("node-fetch");
 
 let solutions: { [key: string]: ISolution } | null = null
 

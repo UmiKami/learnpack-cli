@@ -5,8 +5,10 @@ import {cli} from 'cli-ux'
 import * as targz from 'targz'
 import Console from '../utils/console'
 import * as https from 'https'
-import * as fetch from 'isomorphic-fetch'
 import {InternalError} from '../utils/errors'
+
+// eslint-disable-next-line
+const fetch = require("node-fetch");
 
 export const decompress = (sourcePath: string, destinationPath: string) =>
   new Promise((resolve, reject) => {
@@ -36,6 +38,7 @@ export const downloadEditor = async (
   // if(versions[version] === undefined) throw new Error(`Invalid editor version ${version}`)
   const resp2 = await fetch(
     `https://github.com/learnpack/coding-ide/blob/${version}/dist`,
+    {method: 'HEAD'},
   )
   if (!resp2.ok)
     throw InternalError(
