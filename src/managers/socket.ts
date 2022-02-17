@@ -60,7 +60,9 @@ const SocketManager: ISocket = {
       config.disableGrading ? act !== 'test' : true,
     )
 
-    this.socket = new Server(server)
+    this.socket = new Server(server, {
+      allowEIO3: true,
+    })
 
     if (this.socket) {
       this.socket.on('connection', (socket: Socket) => {
@@ -73,21 +75,23 @@ const SocketManager: ISocket = {
         socket.on(
           'compiler',
           ({action, data}: { action: string; data: IExercise }) => {
-            this.emit('clean', 'pending', ['Working...'])
+            if (action !== 'open') {
+              this.emit('clean', 'pending', ['Working...'])
 
-            if (typeof data.exerciseSlug === 'undefined') {
-              this.log('internal-error', ['No exercise slug specified'])
-              Console.error('No exercise slug especified')
-              return
-            }
+              if (typeof data.exerciseSlug === 'undefined') {
+                this.log('internal-error', ['No exercise slug specified'])
+                Console.error('No exercise slug especified')
+                return
+              }
 
-            if (
-              this.actionCallBacks &&
-              typeof this.actionCallBacks[action] === 'function'
-            ) {
-              this.actionCallBacks[action](data)
-            } else {
-              this.log('internal-error', ['Uknown action ' + action])
+              if (
+                this.actionCallBacks &&
+                typeof this.actionCallBacks[action] === 'function'
+              ) {
+                this.actionCallBacks[action](data)
+              } else {
+                this.log('internal-error', ['Uknown action ' + action])
+              }
             }
           },
         )
@@ -148,9 +152,17 @@ const SocketManager: ISocket = {
       this.removeAllowed('reset')
     }
 
-    Console.debug('dactions', this.config)
     // eslint-disable-next-line
     this.config?.disabledActions?.forEach((a) => this.removeAllowed(a));
+    console.log('Here', {
+      action,
+      status,
+      logs,
+      allowed: this.allowedActions,
+      inputs,
+      report,
+      data,
+    })
 
     this.socket?.emit('compiler', {
       action,
