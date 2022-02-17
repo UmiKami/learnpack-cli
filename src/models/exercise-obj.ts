@@ -10,7 +10,7 @@ export interface IExercise {
   entry?: string | null;
   graded?: boolean;
   translations?: { [key: string]: string };
-  title?: string;
+  title: string;
   getReadme: (lang: string | null) => any;
   getFile: (name: string) => string | Buffer;
   saveFile: (name: string, content: string) => void;

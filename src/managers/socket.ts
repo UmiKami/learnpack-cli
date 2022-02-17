@@ -24,7 +24,11 @@ const SocketManager: ISocket = {
       actions = [actions]
 
     // avoid adding the "test" action if grading is disabled
-    if (actions.includes('test') && this.config?.disable_grading) {
+    if (
+      actions.includes('test') &&
+      (this.config?.disableGrading ||
+        this.config?.disabledActions?.includes('test'))
+    ) {
       actions = actions.filter((a: TAction) => a !== 'test')
     }
 
@@ -53,7 +57,7 @@ const SocketManager: ISocket = {
 
     // remove test action if grading is disabled
     this.allowedActions = config.actions.filter((act: TAction) =>
-      config.disable_grading ? act !== 'test' : true,
+      config.disableGrading ? act !== 'test' : true,
     )
 
     this.socket = new Server(server, {
@@ -148,6 +152,8 @@ const SocketManager: ISocket = {
       this.removeAllowed('reset')
     }
 
+    // eslint-disable-next-line
+    this.config?.disabledActions?.forEach((a) => this.removeAllowed(a));
     console.log('Here', {
       action,
       status,

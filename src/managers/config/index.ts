@@ -4,7 +4,6 @@ import * as shell from 'shelljs'
 import Console from '../../utils/console'
 import watch from '../../utils/watcher'
 import Gitpod from '../gitpod'
-import * as fetch from 'isomorphic-fetch'
 import {
   ValidationError,
   NotFoundError /* , InternalError */,
@@ -21,6 +20,9 @@ import {
 } from '../../models/config-manager'
 import {IExercise} from '../../models/exercise-obj'
 /* exercise folder name standard */
+
+// eslint-disable-next-line
+const fetch = require("node-fetch");
 
 const getConfigPath = () => {
   const possibleFileNames = [
@@ -83,9 +85,13 @@ export default async ({
       )
     }
 
-    configObj = deepMerge(hiddenBcContent, jsonConfig, {
-      config: {disableGrading},
-    })
+    configObj = deepMerge(
+      hiddenBcContent,
+      {configObj: jsonConfig},
+      {
+        config: {disableGrading},
+      },
+    )
     Console.debug('Content form the configuration .json ', configObj)
   } else {
     throw ValidationError(
@@ -148,9 +154,29 @@ export default async ({
         rmSync(configObj.config.outputPath)
         rmSync(configObj.config.dirPath + '/_app')
 
+        if (fs.existsSync(configObj.config.dirPath + '/reports')) {
+          rmSync(configObj.config.dirPath + '/reports')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/resets')) {
+          rmSync(configObj.config.dirPath + '/resets')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/.session')) {
+          rmSync(configObj.config.dirPath + '/.session')
+        }
+
         // clean tag gz
         if (fs.existsSync(configObj.config.dirPath + '/app.tar.gz')) {
           fs.unlinkSync(configObj.config.dirPath + '/app.tar.gz')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/config.json')) {
+          fs.unlinkSync(configObj.config.dirPath + '/config.json')
+        }
+
+        if (fs.existsSync(configObj.config.dirPath + '/vscode_queue.json')) {
+          fs.unlinkSync(configObj.config.dirPath + '/vscode_queue.json')
         }
 
         // clean configuration object
@@ -236,8 +262,6 @@ export default async ({
         const grupedByDirectory = getDirectories(
           configObj.config.exercisesPath,
         )
-
-        console.log('gd', grupedByDirectory)
 
         configObj.exercises =
           grupedByDirectory.length > 0 ?

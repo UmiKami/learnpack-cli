@@ -19,4 +19,6 @@ export default {
   debug(...args: Array<any>) {
     this._debug && console.log(chalk.magentaBright('⚠ debug: '), args)
   },
+  warning: (msg: string) =>
+    console.log(`${chalk.yellow('⚠ warning:')} ${chalk.yellow(msg)}`),
 }

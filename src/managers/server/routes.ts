@@ -119,13 +119,17 @@ export default async function (
           Console.debug(`Exercise detected entry: ${detected?.entry}`)
         }
 
-        if (!exercise.graded || config?.disableGrading) {
+        if (
+          !exercise.graded ||
+          config?.disableGrading ||
+          config?.disabledActions?.includes('test')
+        ) {
           socket.removeAllowed('test')
         } else {
           socket.addAllowed('test')
         }
 
-        if (!exercise.entry) {
+        if (!exercise.entry || config?.disabledActions?.includes('build')) {
           socket.removeAllowed('build')
         } else {
           socket.addAllowed('build')
@@ -136,7 +140,8 @@ export default async function (
             (f: IFile) =>
               !f.name.toLowerCase().includes('readme.') &&
               !f.name.toLowerCase().includes('test.'),
-          ).length === 0
+          ).length === 0 ||
+          config?.disabledActions?.includes('reset')
         ) {
           socket.removeAllowed('reset')
         } else {

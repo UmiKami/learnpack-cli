@@ -14,6 +14,7 @@ export default {
     exercisesPath: './', // path to the folder that contains the exercises
     webpackTemplate: null, // if you want webpack to use an HTML template
     disableGrading: false,
+    disabledActions: [], // Possible: 'build', 'test' or 'reset'
     actions: ['build', 'test', 'reset'], // this should be empty by default, but I'm testing
     entries: {
       html: 'index.html',

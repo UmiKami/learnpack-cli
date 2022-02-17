@@ -11,6 +11,7 @@ import createServer from '../managers/server'
 import {IGitpodData} from '../models/gitpod-data'
 import {IExercise} from '../models/exercise'
 import {IStartFlags} from '../models/flags'
+import {prioritizeHTMLFile} from '../utils/misc'
 
 /* import {
   ValidationError,
@@ -80,7 +81,7 @@ export default class StartCommand extends SessionCommand {
 
       Console.debug(
         `Grading: ${config?.grading} ${
-          config?.disable_grading ? '(disabled)' : ''
+          config?.disabledActions?.includes('test') ? '(disabled)' : ''
         }, editor: ${config?.editor.mode} ${config?.editor.version}, for ${
           Array.isArray(config?.exercises) ? config?.exercises.length : 0
         } exercises found`,
@@ -106,7 +107,8 @@ export default class StartCommand extends SessionCommand {
 
         socket.on('gitpod-open', (data: IGitpodData) => {
           Console.debug('Opening these files on gitpod: ', data)
-          Gitpod.openFiles(data.files)
+          const files = prioritizeHTMLFile(data.files)
+          Gitpod.openFiles(files)
         })
 
         socket.on('reset', (exercise: IExercise) => {
@@ -170,7 +172,7 @@ export default class StartCommand extends SessionCommand {
             return
           }
 
-          if (config.disableGrading) {
+          if (config?.disabledActions!.includes('test')) {
             socket.ready('Grading is disabled on configuration')
             return true
           }

@@ -1,12 +1,14 @@
 // import {Command, flags} from '@oclif/command'
 import {prompt} from 'enquirer'
-import * as fetch from 'isomorphic-fetch'
 import SessionCommand from '../utils/SessionCommand'
 import Console from '../utils/console'
 import api from '../utils/api'
 // import { replace } from 'node-emoji'
 import {validURL} from '../utils/validators'
 // const BaseCommand = require('../utils/BaseCommand');
+
+// eslint-disable-next-line
+const fetch = require("node-fetch");
 
 class PublishCommand extends SessionCommand {
   static description = `Describe the command here
@@ -57,8 +59,10 @@ class PublishCommand extends SessionCommand {
         "The package has a missing or invalid 'repository' on the configuration file, it needs to be a Github URL",
       )
     } else {
-      const validateResp = await fetch(configObject.repository ?? '')
-      if (validateResp.status !== 200) {
+      const validateResp = await fetch(configObject.repository, {
+        method: 'HEAD',
+      })
+      if (!validateResp.ok) {
         throw new Error(
           `The specified repository URL on the configuration file does not exist or its private, only public repositories are allowed at the moment: ${configObject.repository}`,
         )
