@@ -7,19 +7,17 @@ export const CONFIG_SAMPLE = {
   address: 'http://localhost',
   editor: {
     mode: 'standalone',
-    agent: null,
     version: EDITOR_VERSION,
   },
   dirPath: './.learn',
   configPath: './learn.json',
   outputPath: './.learn/dist',
   publicPath: '/preview',
-  publicUrl: null,
-  language: 'auto',
   grading: 'incremental',
   exercisesPath: './exercises',
   exercises: [
     {
+      done: false,
       position: 0,
       slug: EXERCISE_SLUG,
       path: `exercises/${EXERCISE_SLUG}`,
@@ -42,7 +40,7 @@ export const CONFIG_SAMPLE = {
   webpackTemplate: null,
   disableGrading: false,
   disabledActions: [],
-  actions: [],
+  actions: ['build', 'test', 'reset'],
   entries: {
     html: 'index.html',
     vanillajs: 'index.js',
@@ -51,9 +49,4 @@ export const CONFIG_SAMPLE = {
     python3: 'app.py',
     java: 'app.java',
   },
-  difficulty: 'beginner',
-  duration: 1,
-  description: '',
-  title: 'My Interactive Tutorial',
-  slug: 'my-interactive-tutorial',
 }

@@ -46,18 +46,19 @@ describe('start', () => {
   )
 
   test
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}`,
-    api => (api as any).get('/dist').reply(200),
+  .nock('https://github.com', api =>
+    (api as any)
+    .head(`/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`)
+    .reply(200),
   )
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`,
-    api =>
-      (api as any)
-      .get('/app.tar.gz?raw=true')
-      .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
-        'content-type': 'application/octet-stream',
-      }),
+  .nock('https://github.com', api =>
+    (api as any)
+    .get(
+      `/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist/app.tar.gz?raw=true`,
+    )
+    .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
+      'content-type': 'application/octet-stream',
+    }),
   )
   .do(() => {
     mockFolders({
@@ -77,18 +78,19 @@ describe('start', () => {
   )
 
   test
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}`,
-    api => (api as any).get('/dist').reply(200),
+  .nock('https://github.com', api =>
+    (api as any)
+    .head(`/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`)
+    .reply(200),
   )
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`,
-    api =>
-      (api as any)
-      .get('/app.tar.gz?raw=true')
-      .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
-        'content-type': 'application/octet-stream',
-      }),
+  .nock('https://github.com', api =>
+    (api as any)
+    .get(
+      `/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist/app.tar.gz?raw=true`,
+    )
+    .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
+      'content-type': 'application/octet-stream',
+    }),
   )
   .do(() => {
     mockFolders({
@@ -108,18 +110,19 @@ describe('start', () => {
   )
 
   test
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}`,
-    api => (api as any).get('/dist').reply(200),
+  .nock('https://github.com', api =>
+    (api as any)
+    .head(`/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`)
+    .reply(200),
   )
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`,
-    api =>
-      (api as any)
-      .get('/app.tar.gz?raw=true')
-      .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
-        'content-type': 'application/octet-stream',
-      }),
+  .nock('https://github.com', api =>
+    (api as any)
+    .get(
+      `/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist/app.tar.gz?raw=true`,
+    )
+    .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
+      'content-type': 'application/octet-stream',
+    }),
   )
   .do(() => {
     mockFolders({
@@ -145,18 +148,19 @@ describe('start', () => {
   )
 
   test
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}`,
-    api => (api as any).get('/dist').reply(200),
+  .nock('https://github.com', api =>
+    (api as any)
+    .head(`/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`)
+    .reply(200),
   )
-  .nock(
-    `https://github.com/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`,
-    api =>
-      (api as any)
-      .get('/app.tar.gz?raw=true')
-      .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
-        'content-type': 'application/octet-stream',
-      }),
+  .nock('https://github.com', api =>
+    (api as any)
+    .get(
+      `/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist/app.tar.gz?raw=true`,
+    )
+    .replyWithFile(200, `${__dirname}/../utils/dummy.tar.gz`, {
+      'content-type': 'application/octet-stream',
+    }),
   )
   .do(() => {
     mockFolders({

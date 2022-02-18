@@ -87,11 +87,12 @@ export default async ({
 
     configObj = deepMerge(
       hiddenBcContent,
-      {configObj: jsonConfig},
+      {config: jsonConfig},
       {
         config: {disableGrading},
       },
     )
+
     Console.debug('Content form the configuration .json ', configObj)
   } else {
     throw ValidationError(

@@ -138,6 +138,7 @@ describe('clean', () => {
   })
 
   test
+  .skip()
   .stdout()
   .do(() => {
     mockFolders({
