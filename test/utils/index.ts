@@ -46,6 +46,8 @@ export const buildExpectedConfig = (config: any) => {
     'slug',
     'title',
     'publicUrl',
+    'session',
+    'exercises',
   ])
     delete configObj[key]
 

@@ -5,9 +5,11 @@ export interface IConfigManagerAttributes {
   grading: TGrading;
   disableGrading: boolean;
   version: string;
+  mode?: string;
 }
 
 export interface IConfigManager {
+  validLanguages?: any;
   get: () => IConfigObj;
   clean: () => void;
   getExercise: (slug: string) => IExercise;

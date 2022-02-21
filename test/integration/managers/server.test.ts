@@ -8,7 +8,7 @@ import {
   buildExpectedConfig,
   exerciseToPlainJson,
 } from '../../utils'
-import {CONFIG_SAMPLE, EXERCISE_SLUG} from '../../utils/fixtures'
+import {CONFIG_SAMPLE, EXERCISE_SLUG, LEARN_JSON} from '../../utils/fixtures'
 import {IConfigObj, TGrading} from '../../../src/models/config'
 import {IExercise} from '../../../src/models/exercise-obj'
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -21,7 +21,7 @@ describe('server', () => {
   let configObject: IConfigObj
   before(async () => {
     mockFolders({
-      'learn.json': JSON.stringify(CONFIG_SAMPLE),
+      'learn.json': JSON.stringify(LEARN_JSON),
       '.learn': {
         '.session': {},
       },
@@ -33,9 +33,9 @@ describe('server', () => {
     })
 
     const thisConfigManager = await configManager({
-      grading: CONFIG_SAMPLE.grading as TGrading,
-      disableGrading: CONFIG_SAMPLE.disableGrading,
-      version: CONFIG_SAMPLE.editor.version,
+      grading: LEARN_JSON.grading as TGrading,
+      disableGrading: LEARN_JSON.config.disableGrading,
+      version: LEARN_JSON.config.editor.version,
     })
 
     // build exerises
@@ -55,11 +55,11 @@ describe('server', () => {
 
       console.log('Config obtained', config)
 
-      const expectedConfig = buildExpectedConfig(CONFIG_SAMPLE)
+      const expectedConfig = CONFIG_SAMPLE
 
-      console.log(expectedConfig)
+      // console.log(expectedConfig)
 
-      expect(config).to.deep.equal(expectedConfig)
+      expect(config).to.deep.equal(CONFIG_SAMPLE)
       done()
     })
   })

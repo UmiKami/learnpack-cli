@@ -7,6 +7,7 @@ export interface IConfigPath {
 export interface IEditor {
   mode: string;
   version: string;
+  agent?: string;
 }
 
 export type TCompiler =
@@ -20,6 +21,7 @@ export type TCompiler =
 export type TGrading = 'isolated' | 'incremental' | 'no-grading';
 
 export interface IConfig {
+  mode?: any;
   port?: string;
   address: string;
   dirPath: string;
@@ -36,12 +38,15 @@ export interface IConfig {
   disabledActions?: Array<string>;
   compiler: TCompiler;
   exercises?: Array<IExercise>;
+  currentExercise?: IExercise;
+  publicUrl?: string;
   runHook: (...agrs: Array<any>) => void;
 }
 
 export type TConfigObjAttributes = 'config' | 'exercises' | 'grading';
 
 export interface IConfigObj {
+  currentExercise?: any;
   config?: IConfig;
   exercises?: Array<IExercise>;
   grading?: TGrading;
