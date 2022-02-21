@@ -54,11 +54,7 @@ describe('server', () => {
       const config = res.body
       delete config.config.session
 
-      console.log('Config obtained', config)
-
       const expectedConfig = buildExpectedConfig(CONFIG_SAMPLE)
-
-      console.log('Expected', expectedConfig)
 
       expect(config).to.deep.equal(expectedConfig)
       done()

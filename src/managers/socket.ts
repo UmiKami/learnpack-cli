@@ -154,15 +154,6 @@ const SocketManager: ISocket = {
 
     // eslint-disable-next-line
     this.config?.disabledActions?.forEach((a) => this.removeAllowed(a));
-    console.log('Here', {
-      action,
-      status,
-      logs,
-      allowed: this.allowedActions,
-      inputs,
-      report,
-      data,
-    })
 
     this.socket?.emit('compiler', {
       action,
