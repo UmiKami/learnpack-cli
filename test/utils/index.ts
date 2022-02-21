@@ -29,47 +29,9 @@ export const isDirEmpty = (dirname: string) => {
 }
 
 export const buildExpectedConfig = (config: any) => {
-  console.log(config)
+  delete config.config.session
 
-  const configObj: any = {
-    ...config,
-  }
-
-  const {address, port} = configObj
-
-  for (const key of [
-    'description',
-    'difficulty',
-    'disabledActions',
-    'duration',
-    'language',
-    'slug',
-    'title',
-    'publicUrl',
-    'session',
-    'exercises',
-  ])
-    delete configObj[key]
-
-  for (const key of ['address', 'port', 'configObj', 'actions', 'session'])
-    delete config[key]
-
-  return {
-    config: {
-      ...configObj,
-      port,
-      address,
-      configPath: `${configObj.configPath.replace('./', '')}`,
-      outputPath: `${configObj.outputPath.replace('./', '')}`,
-      actions: ['build', 'test', 'reset'],
-      disabledActions: [],
-      translations: [],
-      editor: {
-        mode: configObj.editor.mode,
-        version: configObj.editor.version,
-      },
-    },
-  }
+  return config
 }
 
 export const exerciseToPlainJson = (exercise: IExercise) => {

@@ -27,6 +27,7 @@ describe('server', () => {
       },
       exercises: {
         [EXERCISE_SLUG]: {
+          'README.es.md': 'This is the content of the README.es.md file',
           'README.md': 'This is the content of the README.md file',
         },
       },
@@ -45,21 +46,21 @@ describe('server', () => {
     server = await createServer(configObject, thisConfigManager)
   })
 
-  it.skip('GET /config should return the project configuration', done => {
+  it('GET /config should return the project configuration', done => {
     (chai as any)
     .request('http://localhost:3004')
     .get('/config')
     .end((_: any, res: any) => {
       const config = res.body
-      delete config.session
+      delete config.config.session
 
       console.log('Config obtained', config)
 
-      const expectedConfig = CONFIG_SAMPLE
+      const expectedConfig = buildExpectedConfig(CONFIG_SAMPLE)
 
-      // console.log(expectedConfig)
+      console.log('Expected', expectedConfig)
 
-      expect(config).to.deep.equal(CONFIG_SAMPLE)
+      expect(config).to.deep.equal(expectedConfig)
       done()
     })
   })
