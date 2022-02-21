@@ -50,7 +50,7 @@ export const exercise = (
   if (slug === '.')
     slug = 'default-index'
 
-  const detected = detect(config, files)
+  const detected = detect(configObject, files)
 
   const exerciseObj: IExercise = {
     position,
@@ -191,39 +191,56 @@ export const isDirectory = (source: string) => {
   return fs.lstatSync(source).isDirectory()
 }
 
-export const detect = (config: IConfig | undefined, files: Array<string>) => {
-  if (!config) {
+export const detect = (
+  configObject: IConfigObj | undefined,
+  files: Array<string>,
+) => {
+  if (!configObject) {
     return
   }
+
+  const {config} = configObject
+
+  if (!config)
+    throw new Error('No configuration found during the engine detection')
 
   if (!config.entries)
     throw new Error(
       "No configuration found for entries, please add a 'entries' object with the default file name for your exercise entry file that is going to be used while compiling, for example: index.html for html, app.py for python3, etc.",
     )
+  // A language was found on the config object, but this language will only be used as last resort, learnpack will try to guess each exercise language independently based on file extension (js, jsx, html, etc.)
 
-  let hasFiles = files.filter((f: string) => f.includes('.py'))
+  let hasFiles = files.filter(f => f.includes('.py'))
   if (hasFiles.length > 0)
     return {
       language: 'python3',
       entry: hasFiles.find(f => config.entries.python3 === f),
     }
 
-  hasFiles = files.filter((f: string) => f.includes('.java'))
+  hasFiles = files.filter(f => f.includes('.java'))
   if (hasFiles.length > 0)
     return {
       language: 'java',
       entry: hasFiles.find(f => config.entries.java === f),
     }
 
-  const hasHTML = files.filter((f: string) => f.includes('index.html'))
-  const hasJS = files.filter((f: string) => f.includes('.js'))
-  // vanillajs needs to have at least 2 javascript files,
+  hasFiles = files.filter(f => f.includes('.jsx'))
+  if (hasFiles.length > 0)
+    return {
+      language: 'react',
+      entry: hasFiles.find(f => config.entries.react === f),
+    }
+  const hasHTML = files.filter(f => f.includes('index.html'))
+  const hasIndexJS = files.find(f => f.includes('index.js'))
+  const hasJS = files.filter(f => f.includes('.js'))
+  // angular, vue, vanillajs needs to have at least 2 files (html,css,js),
   // the test.js and the entry file in js
   // if not its just another HTML
-  if (hasJS.length > 1 && hasHTML.length > 0)
+
+  if (hasIndexJS && hasHTML.length > 0)
     return {
       language: 'vanillajs',
-      entry: hasHTML.find(f => config.entries.vanillajs === f),
+      entry: hasIndexJS,
     }
   if (hasHTML.length > 0)
     return {
