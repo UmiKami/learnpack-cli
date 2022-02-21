@@ -70,7 +70,8 @@ const enqueue = (name: string, data: any) => {
 
 const now = () => {
   const hrTime = process.hrtime()
-  const htTime0 = hrTime[0] * 1_000_000
+  // eslint-disable-next-line
+  const htTime0 = hrTime[0] * 1000000;
   return (htTime0 + hrTime[1]) / 1000
 }
 
