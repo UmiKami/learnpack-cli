@@ -4,4 +4,12 @@ export type TStatus =
   | 'compiler-success'
   | 'testing-success'
   | 'compiling'
-  | 'testing';
+  | 'testing'
+  | 'start_exercise'
+  | 'initializing'
+  | 'configuration_loaded'
+  | 'connection_ended'
+  | 'reset_exercise'
+  | 'open_files'
+  | 'open_window'
+  | 'instructions_closed';

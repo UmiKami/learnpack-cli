@@ -21,6 +21,7 @@ export interface ISocket {
   clean: (_: string, logs: Array<any>) => void;
   ask: (questions: Array<string>) => void;
   reload: (files: Array<string> | null, exercises: Array<string>) => void;
+  openWindow: (id: string) => void;
   log: (
     status: TStatus,
     messages?: string | Array<string>,

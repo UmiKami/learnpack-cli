@@ -10,6 +10,8 @@ import {TStatus} from '../models/status'
 import {TSuccessType} from '../models/success-types'
 import * as http from 'http'
 
+import queue from '../utils/fileQueue'
+
 const SocketManager: ISocket = {
   socket: null,
   config: null,
@@ -117,6 +119,17 @@ const SocketManager: ISocket = {
       'reload',
       files?.join('') || '' /* TODO: Check it out this */,
       exercises,
+    )
+  },
+  openWindow: function (url: string) {
+    queue.dispatcher().enqueue(queue.events.OPEN_WINDOW, url)
+    this.emit(
+      queue.events.OPEN_WINDOW as TAction,
+      'ready',
+      [`Opening ${url}`],
+      [],
+      [],
+      url,
     )
   },
   log: function (
