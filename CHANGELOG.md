@@ -19,3 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added test to check that the `.session` folder has been removed from the `.learn` directory when using `learnpack clean` command.
 - Migrate from isomorphic-fecth to node-fetch.
 - Removed isomorphic-fetch from the package.json.
+
+### March 2, 2022
+
+- Added missing functionalities to call the dispatcher with the values which was making the build functionality to be broken.

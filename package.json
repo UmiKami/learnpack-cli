@@ -13,6 +13,7 @@
     "@oclif/plugin-help": "^3.1.0",
     "@oclif/plugin-plugins": "^1.8.0",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
+    "@types/xxhashjs": "^0.2.2",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.0",
@@ -33,7 +34,8 @@
     "socket.io": "^4.4.0",
     "targz": "^1.0.1",
     "tslib": "^1",
-    "validator": "^13.1.1"
+    "validator": "^13.1.1",
+    "xxhashjs": "^0.2.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -90,7 +92,8 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-warn-if-update-available",
+      "learnpack-html"
     ]
   },
   "repository": "learnpack/learnpack-cli",
@@ -103,8 +106,7 @@
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "eslint --cache --fix",
-      "npm run test"
+      "eslint --cache --fix"
     ],
     "*.{js,css,md,ts}": "prettier --write"
   }

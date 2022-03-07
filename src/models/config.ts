@@ -32,6 +32,7 @@ export interface IConfig {
   translations: Array<string>;
   outputPath?: string;
   editor: IEditor;
+  language: string;
   exercisesPath: string;
   actions: Array<any>;
   disableGrading: boolean;

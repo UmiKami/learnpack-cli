@@ -13,6 +13,7 @@ export interface IConfigManager {
   get: () => IConfigObj;
   clean: () => void;
   getExercise: (slug: string) => IExercise;
+  startExercise: (slug: string) => IExercise;
   reset: (slug: string) => void;
   buildIndex: () => boolean | void;
   watchIndex: (onChange: (...args: Array<any>) => void) => void;

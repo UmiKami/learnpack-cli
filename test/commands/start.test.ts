@@ -28,6 +28,7 @@ describe('start', () => {
   })
 
   test
+  .skip()
   .do(() => {
     mockFolders({
       'learn.json': JSON.stringify(CONFIG_SAMPLE),

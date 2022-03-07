@@ -3,6 +3,7 @@ import * as express from 'express'
 import * as fs from 'fs'
 import * as bodyParser from 'body-parser'
 import socket from '../socket'
+import queue from '../../utils/fileQueue'
 // import gitpod from '../gitpod'
 import {detect, filterFiles} from '../config/exercise'
 import {IFile} from '../../models/file'
@@ -36,6 +37,11 @@ export default async function (
   configManager: IConfigManager,
 ) {
   const {config, exercises} = configObject
+
+  const dispatcher = queue.dispatcher({
+    create: true,
+    path: `${config?.dirPath}/vscode_queue.json`,
+  })
   app.get(
     '/config',
     withHandler((_: express.Request, res: express.Response) => {
@@ -83,76 +89,85 @@ export default async function (
 
   app.get(
     '/exercise/:slug',
-    withHandler(
-      ({params: {slug}}: express.Request, res: express.Response) => {
-        const exercise = configManager.getExercise(slug)
-
-        // if we are in incremental grading, the entry file can by dinamically detected
-        // based on the changes the student is making during the exercise
-        if (config?.grading === 'incremental') {
-          const entries = new Set(
-            Object.keys(config.entries).map(lang => config.entries[lang]),
-          )
-          const scanedFiles = fs.readdirSync('./')
-          const onlyEntries = scanedFiles.filter(fileName =>
-            entries.has(fileName),
-          )
-          const detected = detect(config, onlyEntries)
-
-          // update the file hierarchy with updates
-          exercise.files = [
-            ...exercise.files.filter((f: IFile) => f.name.includes('test.')),
-            ...filterFiles(scanedFiles),
-          ]
-          Console.debug('Exercise updated files: ', exercise.files)
-          // if a new language for the testing engine is detected, we replace it
-          // if not we leave it as it was before
-          if (detected?.language) {
-            Console.debug(
-              `Switching to ${detected.language} engine in this exercise`,
-            )
-            exercise.language = detected.language
-          }
-
-          // WARNING: has to be the FULL PATH to the entry path
-          exercise.entry = detected?.entry
-          Console.debug(`Exercise detected entry: ${detected?.entry}`)
-        }
-
-        if (
-          !exercise.graded ||
-          config?.disableGrading ||
-          config?.disabledActions?.includes('test')
-        ) {
-          socket.removeAllowed('test')
-        } else {
-          socket.addAllowed('test')
-        }
-
-        if (!exercise.entry || config?.disabledActions?.includes('build')) {
-          socket.removeAllowed('build')
-        } else {
-          socket.addAllowed('build')
-        }
-
-        if (
-          exercise.files.filter(
-            (f: IFile) =>
-              !f.name.toLowerCase().includes('readme.') &&
-              !f.name.toLowerCase().includes('test.'),
-          ).length === 0 ||
-          config?.disabledActions?.includes('reset')
-        ) {
-          socket.removeAllowed('reset')
-        } else {
-          socket.addAllowed('reset')
-        }
-
-        socket.log('ready')
-
+    withHandler((req: express.Request, res: express.Response) => {
+      // no need to re-start exercise if it's already started
+      if (
+        configObject.currentExercise &&
+        req.params.slug === configObject.currentExercise
+      ) {
+        const exercise = configManager.getExercise(req.params.slug)
         res.json(exercise)
-      },
-    ),
+        return
+      }
+
+      const exercise = configManager.startExercise(req.params.slug)
+      dispatcher.enqueue(dispatcher.events.START_EXERCISE, req.params.slug)
+
+      // if we are in incremental grading, the entry file can by dinamically detected
+      // based on the changes the student is making during the exercise
+      if (config?.grading === 'incremental') {
+        const entries = new Set(
+          Object.keys(config.entries).map(lang => config.entries[lang]),
+        )
+        const scanedFiles = fs.readdirSync('./')
+        const onlyEntries = scanedFiles.filter(fileName =>
+          entries.has(fileName),
+        )
+        const detected = detect(config, onlyEntries)
+
+        // update the file hierarchy with updates
+        exercise.files = [
+          ...exercise.files.filter((f: IFile) => f.name.includes('test.')),
+          ...filterFiles(scanedFiles),
+        ]
+        Console.debug('Exercise updated files: ', exercise.files)
+        // if a new language for the testing engine is detected, we replace it
+        // if not we leave it as it was before
+        if (detected?.language) {
+          Console.debug(
+            `Switching to ${detected.language} engine in this exercise`,
+          )
+          exercise.language = detected.language
+        }
+
+        // WARNING: has to be the FULL PATH to the entry path
+        exercise.entry = detected?.entry
+        Console.debug(`Exercise detected entry: ${detected?.entry}`)
+      }
+
+      if (
+        !exercise.graded ||
+        config?.disableGrading ||
+        config?.disabledActions?.includes('test')
+      ) {
+        socket.removeAllowed('test')
+      } else {
+        socket.addAllowed('test')
+      }
+
+      if (!exercise.entry || config?.disabledActions?.includes('build')) {
+        socket.removeAllowed('build')
+      } else {
+        socket.addAllowed('build')
+      }
+
+      if (
+        exercise.files.filter(
+          (f: IFile) =>
+            !f.name.toLowerCase().includes('readme.') &&
+            !f.name.toLowerCase().includes('test.'),
+        ).length === 0 ||
+        config?.disabledActions?.includes('reset')
+      ) {
+        socket.removeAllowed('reset')
+      } else {
+        socket.addAllowed('reset')
+      }
+
+      socket.log('ready')
+
+      res.json(exercise)
+    }),
   )
 
   app.get(
