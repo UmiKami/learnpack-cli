@@ -1,174 +1,186 @@
-import {Server, Socket} from 'socket.io'
-import Console from '../utils/console'
+import { connect } from "socket.io";
+import Console from "../utils/console";
+import queue from "../utils/fileQueue";
 
-// import {IExercise} from '../models/exercise'
-import {ISocket} from '../models/socket'
-import {IConfig} from '../models/config'
-import {ICallback, TAction} from '../models/action'
-import {IExercise} from '../models/exercise'
-import {TStatus} from '../models/status'
-import {TSuccessType} from '../models/success-types'
-import * as http from 'http'
-
-import queue from '../utils/fileQueue'
+import { ISocket } from "../models/socket";
+import { IConfig } from "../models/config";
+import { ICallback, TAction } from "../models/action";
+import { IExercise } from "../models/exercise-obj";
+import { TStatus } from "../models/status";
+import { TSuccessType } from "../models/success-types";
+import * as http from "http";
 
 const SocketManager: ISocket = {
   socket: null,
   config: null,
   allowedActions: null,
+  isTestingEnvironment: false,
   actionCallBacks: {
     clean: (_, s: { logs: Array<string> }) => {
-      s.logs = []
+      s.logs = [];
     },
   },
   addAllowed: function (actions: Array<TAction> | TAction) {
-    if (!Array.isArray(actions))
-      actions = [actions]
+    if (!Array.isArray(actions)) actions = [actions];
 
     // avoid adding the "test" action if grading is disabled
     if (
-      actions.includes('test') &&
+      actions.includes("test") &&
       (this.config?.disableGrading ||
-        this.config?.disabledActions?.includes('test'))
+        this.config?.disabledActions?.includes("test"))
     ) {
-      actions = actions.filter((a: TAction) => a !== 'test')
+      actions = actions.filter((a: TAction) => a !== "test");
     }
 
-    // remove duplicates
-    /* this.allowedActions = this.allowedActions
-      .filter((a) => !actions.includes(a))
-      .concat(actions); */
     this.allowedActions = [
       ...(this.allowedActions || []).filter(
-        (a: TAction) => !actions.includes(a),
+        (a: TAction) => !actions.includes(a)
       ),
       ...actions,
-    ]
+    ];
   },
   removeAllowed: function (actions: Array<TAction> | TAction) {
     if (!Array.isArray(actions)) {
-      actions = [actions]
+      actions = [actions];
     }
 
     this.allowedActions = (this.allowedActions || []).filter(
-      (a: TAction) => !actions.includes(a),
-    )
+      (a: TAction) => !actions.includes(a)
+    );
   },
-  start: function (config: IConfig, server: http.Server) {
-    this.config = config
+  start: function (
+    config: IConfig,
+    server: http.Server,
+    isTestingEnvironment: boolean = false
+  ) {
+    this.config = config;
+    this.isTestingEnvironment = isTestingEnvironment;
 
     // remove test action if grading is disabled
     this.allowedActions = config.actions.filter((act: TAction) =>
-      config.disableGrading ? act !== 'test' : true,
-    )
+      config.disableGrading ? act !== "test" : true
+    );
 
-    this.socket = new Server(server, {
-      allowEIO3: true,
-    })
+    this.socket = connect(server);
 
     if (this.socket) {
-      this.socket.on('connection', (socket: Socket) => {
+      this.socket.on("connection", (socket: ISocket) => {
         Console.debug(
-          'Connection with client successfully established',
-          this.allowedActions,
-        )
-        this.log('ready', ['Ready to compile or test...'])
+          "Connection with client successfully established",
+          this.allowedActions
+        );
+        if (!this.isTestingEnvironment) {
+          this.log("ready", ["Ready to compile or test..."]);
+        }
 
         socket.on(
-          'compiler',
-          ({action, data}: { action: string; data: IExercise }) => {
-            if (action !== 'open') {
-              this.emit('clean', 'pending', ['Working...'])
+          "compiler",
+          ({ action, data }: { action: string; data: IExercise }) => {
+            this.emit("clean", "pending", ["Working..."]);
 
-              if (typeof data.exerciseSlug === 'undefined') {
-                this.log('internal-error', ['No exercise slug specified'])
-                Console.error('No exercise slug especified')
-                return
-              }
-
-              if (
-                this.actionCallBacks &&
-                typeof this.actionCallBacks[action] === 'function'
-              ) {
-                this.actionCallBacks[action](data)
-              } else {
-                this.log('internal-error', ['Uknown action ' + action])
-              }
+            if (typeof data.slug === "undefined") {
+              this.log("internal-error", ["No exercise slug specified"]);
+              Console.error("No exercise slug especified");
+              return;
             }
-          },
-        )
-      })
+
+            if (
+              this.actionCallBacks &&
+              typeof this.actionCallBacks[action] === "function"
+            ) {
+              this.actionCallBacks[action](data);
+            } else {
+              this.log("internal-error", ["Uknown action " + action]);
+            }
+          }
+        );
+      });
     }
   },
   on: function (action: TAction, callBack: ICallback) {
     if (this.actionCallBacks) {
-      this.actionCallBacks[action] = callBack
+      this.actionCallBacks[action] = callBack;
     }
   },
-  clean: function (_ = 'pending', logs = []) {
-    this.emit('clean', 'pending', logs)
+  clean: function (_ = "pending", logs = []) {
+    this.emit("clean", "pending", logs);
   },
   ask: function (questions = []) {
     return new Promise((resolve, _) => {
-      this.emit('ask', 'pending', ['Waiting for input...'], questions)
-      this.on('input', ({inputs}: { inputs: string }) => resolve(inputs))
-    })
+      this.emit("ask", "pending", ["Waiting for input..."], questions);
+      this.on("input", ({ inputs }: any) => {
+        // Workaround to fix issue because null inputs
+        let isNull = false;
+        inputs.forEach((input: any) => {
+          if (input === null) {
+            isNull = true;
+          }
+        });
+
+        if (!isNull) {
+          resolve(inputs);
+        }
+      });
+    });
   },
-  reload: function (files: Array<string> | null, exercises: Array<string>) {
+  reload: function (
+    files: Array<string> | null = null,
+    exercises: Array<string> | null = null
+  ) {
     this.emit(
-      'reload',
-      files?.join('') || '' /* TODO: Check it out this */,
-      exercises,
-    )
+      "reload",
+      files?.join("") || "" /* TODO: Check it out this */,
+      exercises!
+    );
   },
-  openWindow: function (url: string) {
-    queue.dispatcher().enqueue(queue.events.OPEN_WINDOW, url)
+  openWindow: function (url: string = "") {
+    queue.dispatcher().enqueue(queue.events.OPEN_WINDOW, url);
     this.emit(
       queue.events.OPEN_WINDOW as TAction,
-      'ready',
+      "ready",
       [`Opening ${url}`],
       [],
       [],
-      url,
-    )
+      url
+    );
   },
   log: function (
     status: TStatus,
     messages: string | Array<string> = [],
     report: Array<string> = [],
-    data: any = null,
+    data: any = null
   ) {
-    this.emit('log', status, messages, [], report, data)
-    Console.log(messages)
+    this.emit("log", status, messages, [], report, data);
+    Console.log(messages);
   },
   emit: function (
     action: TAction,
-    status: TStatus | string = 'ready',
+    status: TStatus | string = "ready",
     logs: string | Array<string> = [],
     inputs: Array<string> = [],
     report: Array<string> = [],
-    data: any = null,
+    data: any = null
   ) {
     if (
       this.config?.compiler &&
-      ['webpack', 'vanillajs', 'vue', 'react', 'css', 'html'].includes(
-        this.config?.compiler,
+      ["webpack", "vanillajs", "vue", "react", "css", "html"].includes(
+        this.config?.compiler
       )
     ) {
-      if (['compiler-success', 'compiler-warning'].includes(status))
-        this.addAllowed('preview')
-      if (['compiler-error'].includes(status) || action === 'ready')
-        this.removeAllowed('preview')
+      if (["compiler-success", "compiler-warning"].includes(status))
+        this.addAllowed("preview");
+      if (["compiler-error"].includes(status) || action === "ready")
+        this.removeAllowed("preview");
     }
 
-    if (this.config?.grading === 'incremental') {
-      this.removeAllowed('reset')
+    if (this.config?.grading === "incremental") {
+      this.removeAllowed("reset");
     }
 
     // eslint-disable-next-line
     this.config?.disabledActions?.forEach((a) => this.removeAllowed(a));
 
-    this.socket?.emit('compiler', {
+    this.socket?.emit("compiler", {
       action,
       status,
       logs,
@@ -176,31 +188,41 @@ const SocketManager: ISocket = {
       inputs,
       report,
       data,
-    })
+    });
   },
 
   ready: function (message: string) {
-    this.log('ready', [message])
+    this.log("ready", [message]);
   },
   success: function (type: TSuccessType, stdout: string) {
-    const types = ['compiler', 'testing']
+    const types = ["compiler", "testing"];
     if (!types.includes(type))
-      this.fatal(`Invalid socket success type "${type}" on socket`)
-    else if (stdout === '')
-      this.log((type + '-success') as TSuccessType, [
-        'No stdout to display on the console',
-      ])
-    else
-      this.log((type + '-success') as TSuccessType, [stdout])
+      this.fatal(`Invalid socket success type "${type}" on socket`);
+    else if (stdout === "")
+      this.log((type + "-success") as TSuccessType, [
+        "No stdout to display on the console",
+      ]);
+    else this.log((type + "-success") as TSuccessType, [stdout]);
   },
   error: function (type: TStatus, stdout: string) {
-    console.error('Socket error: ' + type, stdout)
-    this.log(type, [stdout])
+    console.error("Socket error: " + type, stdout);
+    this.log(type, [stdout]);
+
+    if (this.isTestingEnvironment) {
+      this.onTestingFinished({
+        result: "failed",
+      });
+    }
   },
   fatal: function (msg: string) {
-    this.log('internal-error', [msg])
-    throw msg
+    this.log("internal-error", [msg]);
+    throw msg;
   },
-}
+  onTestingFinished: function (result: any) {
+    if (this.config?.testingFinishedCallback) {
+      this.config.testingFinishedCallback(result);
+    }
+  },
+};
 
-export default SocketManager
+export default SocketManager;
