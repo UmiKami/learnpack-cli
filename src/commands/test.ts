@@ -1,6 +1,6 @@
 import Console from "../utils/console";
 import SessionCommand from "../utils/SessionCommand";
-import socket from "../managers/socket.js";
+import socket from "../managers/socket";
 
 import createServer from "../managers/server";
 import ExercisesQueue from "../utils/exercisesQueue";
@@ -58,7 +58,7 @@ class TestCommand extends SessionCommand {
 
         process.exit(hasFailed ? 1 : 0);
       } else {
-        exercisesQueue.pop()!.test(this.config, config!, socket);
+        exercisesQueue.pop()!.test!(this.config, config!, socket);
       }
     };
 
@@ -68,7 +68,7 @@ class TestCommand extends SessionCommand {
 
     socket.start(config!, server, true);
 
-    exercisesQueue.pop()!.test(this.config, config!, socket);
+    exercisesQueue.pop()!.test!(this.config, config!, socket);
   }
 }
 

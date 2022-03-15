@@ -5,7 +5,12 @@ import { TAction, ICallback } from "./action";
 import { TStatus } from "./status";
 
 export interface ISocket {
-  socket: any;
+  socket: Server<
+    DefaultEventsMap,
+    DefaultEventsMap,
+    DefaultEventsMap,
+    any
+  > | null;
   config: IConfig | null;
   allowedActions: Array<TAction> | null;
   actionCallBacks: { [key: string]: ICallback };

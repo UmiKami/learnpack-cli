@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as shell from "shelljs";
 import Console from "../../utils/console";
 import watch from "../../utils/watcher";
-import Gitpod from "../gitpod";
 import {
   ValidationError,
   NotFoundError,

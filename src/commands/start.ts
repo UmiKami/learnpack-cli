@@ -10,7 +10,7 @@ import { prioritizeHTMLFile } from "../utils/misc";
 import createServer from "../managers/server";
 
 import { IGitpodData } from "../models/gitpod-data";
-import { IExercise } from "../models/exercise";
+import { IExercise, IExerciseData } from "../models/exercise-obj";
 
 export default class StartCommand extends SessionCommand {
   static description = "Runs a small server with all the exercise instructions";
@@ -99,7 +99,7 @@ export default class StartCommand extends SessionCommand {
           path: `${config.dirPath}/vscode_queue.json`,
         });
 
-        socket.start(config, server);
+        socket.start(config, server, false);
 
         socket.on("open", (data: IGitpodData) => {
           Console.debug("Opening these files: ", data);
@@ -114,7 +114,7 @@ export default class StartCommand extends SessionCommand {
           socket.ready("Ready to compile...");
         });
 
-        socket.on("reset", (exercise: IExercise) => {
+        socket.on("reset", (exercise: IExerciseData) => {
           try {
             this.configManager?.reset(exercise.exerciseSlug);
             dispatcher.enqueue(
@@ -137,7 +137,7 @@ export default class StartCommand extends SessionCommand {
         //   socket.log('ready',['Ready to compile...'])
         // })
 
-        socket.on("build", async (data: IExercise) => {
+        socket.on("build", async (data: IExerciseData) => {
           const exercise = this.configManager?.getExercise(data.exerciseSlug);
 
           if (!exercise?.language) {
@@ -166,7 +166,7 @@ export default class StartCommand extends SessionCommand {
           });
         });
 
-        socket.on("test", async (data: IExercise) => {
+        socket.on("test", async (data: IExerciseData) => {
           const exercise = this.configManager?.getExercise(data.exerciseSlug);
 
           if (!exercise?.language) {

@@ -1,11 +1,11 @@
-import { connect } from "socket.io";
+import { Socket, Server } from "socket.io";
 import Console from "../utils/console";
 import queue from "../utils/fileQueue";
 
 import { ISocket } from "../models/socket";
 import { IConfig } from "../models/config";
 import { ICallback, TAction } from "../models/action";
-import { IExercise } from "../models/exercise-obj";
+import { IExercise, IExerciseData } from "../models/exercise-obj";
 import { TStatus } from "../models/status";
 import { TSuccessType } from "../models/success-types";
 import * as http from "http";
@@ -61,10 +61,10 @@ const SocketManager: ISocket = {
       config.disableGrading ? act !== "test" : true
     );
 
-    this.socket = connect(server);
+    this.socket = new Server(server, { allowEIO3: true });
 
     if (this.socket) {
-      this.socket.on("connection", (socket: ISocket) => {
+      this.socket.on("connection", (socket: Socket) => {
         Console.debug(
           "Connection with client successfully established",
           this.allowedActions
@@ -75,10 +75,10 @@ const SocketManager: ISocket = {
 
         socket.on(
           "compiler",
-          ({ action, data }: { action: string; data: IExercise }) => {
+          ({ action, data }: { action: string; data: IExerciseData }) => {
             this.emit("clean", "pending", ["Working..."]);
 
-            if (typeof data.slug === "undefined") {
+            if (typeof data.exerciseSlug === "undefined") {
               this.log("internal-error", ["No exercise slug specified"]);
               Console.error("No exercise slug especified");
               return;

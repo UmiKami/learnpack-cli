@@ -1,4 +1,4 @@
-import { IConfig } from "@oclif/config";
+import { IConfig } from "../models/config";
 import { IExercise } from "../models/exercise-obj";
 import { ISocket } from "../models/socket";
 
