@@ -1,4 +1,6 @@
-import {IFile} from './file'
+import { IFile } from "./file";
+import { IConfig } from "./config";
+import { ISocket } from "./socket";
 
 export interface IExercise {
   position?: number;
@@ -15,4 +17,10 @@ export interface IExercise {
   getFile: (name: string) => string | Buffer;
   saveFile: (name: string, content: string) => void;
   getTestReport: () => any;
+  test?: (sessionConfig: any, config: IConfig, socket: ISocket) => void;
+}
+
+export interface IExerciseData {
+  exerciseSlug: string;
+  files: string[];
 }

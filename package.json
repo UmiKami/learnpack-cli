@@ -13,6 +13,7 @@
     "@oclif/plugin-help": "^3.1.0",
     "@oclif/plugin-plugins": "^1.8.0",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
+    "@types/fs-extra": "^9.0.13",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.0",
@@ -30,7 +31,7 @@
     "node-persist": "^3.1.0",
     "prompts": "^2.3.2",
     "shelljs": "^0.8.4",
-    "socket.io": "^4.4.0",
+    "socket.io": "^4.4.1",
     "targz": "^1.0.1",
     "tslib": "^1",
     "validator": "^13.1.1",
@@ -60,6 +61,7 @@
     "eslint": "^8.2.0",
     "eslint-config-oclif": "^4.0",
     "eslint-config-oclif-typescript": "^1.0.2",
+    "fs-extra": "^10.0.1",
     "globby": "^10.0.2",
     "husky": ">=6",
     "lint-staged": ">=10",
@@ -104,10 +106,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{js,ts}": [
-      "eslint --cache --fix",
-      "npm run test"
-    ],
+    "*.{js,ts}": [],
     "*.{js,css,md,ts}": "prettier --write"
   }
 }
