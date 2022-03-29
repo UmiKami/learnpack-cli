@@ -145,13 +145,7 @@ const alreadyInitialized = () =>
   new Promise((resolve, reject) => {
     fs.readdir("./", function (err: any, files: any) {
       files = files.filter((f: any) =>
-        [
-          ".learn",
-          "learn.json",
-          "bc.json",
-          ".breathecode",
-          ".gitignore",
-        ].includes(f)
+        [".learn", "learn.json", "bc.json", ".breathecode"].includes(f)
       );
       if (err) {
         reject(ValidationError(err.message));

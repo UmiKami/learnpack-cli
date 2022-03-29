@@ -7,7 +7,7 @@ import queue from "../../utils/fileQueue";
 // import gitpod from '../gitpod'
 import { detect, filterFiles } from "../config/exercise";
 import { IFile } from "../../models/file";
-import { IConfigObj } from "../../models/config";
+import { IConfigObj, TEntries } from "../../models/config";
 import { IConfigManager } from "../../models/config-manager";
 import { IExercise } from "../../models/exercise-obj";
 
@@ -98,8 +98,6 @@ export default async function (
         { params: { slug }, query: { lang } }: express.Request,
         res: express.Response
       ) => {
-        console.log(configManager.getExercise(slug));
-
         const excercise: IExercise = configManager.getExercise(slug);
 
         if (excercise) {
@@ -138,8 +136,10 @@ export default async function (
       const exercise = configManager.startExercise(req.params.slug);
       dispatcher.enqueue(dispatcher.events.START_EXERCISE, req.params.slug);
 
-      const entries = Object.keys(config?.entries).map(
-        (lang) => config?.entries[lang]
+      type TEntry = "python3" | "html" | "node" | "react" | "java";
+
+      const entries = Object.keys(config?.entries!).map(
+        (lang) => config?.entries[lang as TEntry]
       );
       // if we are in incremental grading, the entry file can by dinamically detected
       // based on the changes the student is making during the exercise
@@ -156,7 +156,7 @@ export default async function (
       const detected = detect(
         configObject,
         exercise.files
-          .filter((fileName) => entries.includes(fileName.name || fileName))
+          .filter((fileName) => entries.includes(fileName.name))
           .map((f) => f.name || f) as string[]
       );
 

@@ -13,12 +13,11 @@ import defaults from "./defaults";
 import { exercise } from "./exercise";
 
 import { rmSync } from "../file";
-import { IConfigObj, TConfigObjAttributes } from "../../models/config";
+import { IConfigObj, TConfigObjAttributes, TMode } from "../../models/config";
 import {
   IConfigManagerAttributes,
   IConfigManager,
 } from "../../models/config-manager";
-import { IExercise } from "../../models/exercise-obj";
 import { IFile } from "../../models/file";
 
 /* exercise folder name standard */
@@ -91,20 +90,21 @@ export default async ({
     if (!jsonConfig)
       throw new Error(`Invalid ${confPath.config} syntax: Unable to parse.`);
 
-    // add using id to the installation
-    if (!jsonConfig.session)
-      jsonConfig.session = Math.floor(
-        Math.random() * 10_000_000_000_000_000_000
-      );
+    let session: number;
 
-    configObj = deepMerge(
-      hiddenBcContent,
-      { config: jsonConfig },
-      {
-        config: { disableGrading },
-      }
-    );
-    Console.debug("Content form the configuration .json ", configObj);
+    // add using id to the installation
+    if (!jsonConfig.session) {
+      session = Math.floor(Math.random() * 10_000_000_000_000_000_000);
+    } else {
+      session = jsonConfig.session;
+      delete jsonConfig.session;
+    }
+
+    configObj = deepMerge(hiddenBcContent, {
+      config: jsonConfig,
+      session: session,
+    });
+    Console.debug("Content from the configuration .json ", configObj);
   } else {
     throw ValidationError(
       "No learn.json file has been found, make sure you are in the folder"
@@ -132,33 +132,34 @@ export default async ({
   // auto detect agent (if possible)
   if (shell.which("gp") && configObj && configObj.config) {
     configObj.config.editor.agent = "gitpod";
-    configObj.config.address = getGitpodAddress();
+    configObj.address = getGitpodAddress();
     configObj.config.publicUrl = `https://${
       configObj.config.port
-    }-${configObj.config.address.slice(8)}`;
+    }-${configObj.address.slice(8)}`;
   } else if (configObj.config && !configObj.config.editor.agent) {
     configObj.config.editor.agent = "localhost";
   }
 
   if (configObj.config && !configObj.config.publicUrl)
-    configObj.config.publicUrl = `${configObj.config.address}:${configObj.config.port}`;
+    configObj.config.publicUrl = `${configObj.address}:${configObj.config.port}`;
 
   // Assign default editor mode if not set already
   if (configObj.config && mode !== null) {
-    configObj.config.editor.mode = mode || "";
+    configObj.config.editor.mode = (mode as TMode) || ("vscode" as TMode);
   }
 
-  if (configObj.config && !configObj.config.mode)
+  if (configObj.config && !configObj.config.editor.mode)
     configObj.config.editor.mode =
-      configObj.config.editor.agent === "localhost" ? "standalone" : "preview";
+      configObj.config.editor.agent === "localhost" ? "standalone" : "vscode";
 
   if (version && configObj.config) configObj.config.editor.version = version;
   else if (configObj.config && configObj.config.editor.version === null) {
+    Console.debug("Config version not found, downloading default.");
     const resp = await fetch(
       "https://raw.githubusercontent.com/learnpack/coding-ide/learnpack/package.json"
     );
     const packageJSON = await resp.json();
-    configObj.config.editor.version = packageJSON.version || "1.0.61";
+    configObj.config.editor.version = packageJSON.version || "1.0.72";
   }
 
   if (configObj.config) {
@@ -242,6 +243,7 @@ export default async ({
       }
     },
     getExercise: (slug) => {
+      Console.debug("ExercisePath Slug", slug);
       const exercise = (configObj.exercises || []).find(
         (ex) => ex.slug === slug
       );
@@ -357,7 +359,7 @@ export default async ({
           throw error;
         });
     },
-    save: (config = null) => {
+    save: () => {
       Console.debug("Saving configuration with: ", configObj);
 
       // remove the duplicates form the actions array

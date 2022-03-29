@@ -1,7 +1,6 @@
 export default {
   config: {
     port: 3000,
-    address: "http://localhost",
     editor: {
       mode: null, //[standalone, preview]
       agent: null, //[vscode, theia]
@@ -12,6 +11,7 @@ export default {
     outputPath: "./.learn/dist",
     publicPath: "/preview",
     publicUrl: null,
+    exerciseNameValidationRegex: "/^(d{2,3}(.d{1,2})?-([dA-Za-z]+(-|_)?)+)$/",
     language: "auto",
     grading: "isolated", // [isolated, incremental]
     exercisesPath: "./", // path to the folder that contains the exercises
@@ -28,5 +28,7 @@ export default {
       java: "app.java",
     },
   },
+  address: "http://localhost",
   currentExercise: null,
+  exercises: [],
 };

@@ -74,7 +74,9 @@ export default class StartCommand extends SessionCommand {
         `Grading: ${config?.grading} ${
           config?.disabledActions?.includes("test") ? "(disabled)" : ""
         }, editor: ${config?.editor.mode} ${config?.editor.version}, for ${
-          Array.isArray(config?.exercises) ? config?.exercises.length : 0
+          Array.isArray(configObject?.exercises)
+            ? configObject?.exercises.length
+            : 0
         } exercises found`
       );
 

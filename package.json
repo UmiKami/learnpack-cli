@@ -71,7 +71,8 @@
     "nyc": "^14.1.1",
     "prettier": "^2.4.1",
     "ts-node": "^8",
-    "typescript": "^3.3"
+    "typescript": "^3.3",
+    "pre-commit": "^1.2.2"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -94,13 +95,26 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
+      "@oclif/plugin-warn-if-update-available",
+      "learnpack-html"
+    ],
+    "permanent_plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins",
       "@oclif/plugin-warn-if-update-available"
     ]
   },
   "repository": "learnpack/learnpack-cli",
+  "pre-commit": {
+    "silent": true,
+    "run": [
+      "pre"
+    ]
+  },
   "scripts": {
     "postpack": "rm -f oclif.manifest.json && eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "pre": "node ./test/precommit/index.ts",
     "test": "NODE_ENV=test nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "prepare": "husky install"

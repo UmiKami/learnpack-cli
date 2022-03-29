@@ -5,7 +5,7 @@ export interface IConfigPath {
 }
 
 export interface IEditor {
-  mode: string;
+  mode?: TMode;
   version: string;
   agent?: string;
 }
@@ -20,18 +20,27 @@ export type TCompiler =
 
 export type TGrading = "isolated" | "incremental" | "no-grading";
 
+export type TMode = "vscode" | "standalone";
+
+export type TConfigAction = "test" | "build" | "tutorial" | "reset";
+
+export interface TEntries {
+  python3?: string;
+  html?: string;
+  node?: string;
+  react?: string;
+  java?: string;
+}
+
 export interface IConfig {
-  mode?: any;
   port?: string;
   repository?: string;
   description?: string;
   slug?: string;
-  address: string;
   dirPath: string;
-  preview?: string;
-  entries: any;
+  preview?: string; // Picture thumbnail
+  entries: TEntries;
   grading: TGrading;
-  confPath: IConfigPath;
   configPath: string;
   translations: Array<string>;
   outputPath?: string;
@@ -41,17 +50,14 @@ export interface IConfig {
   duration: number;
   difficulty?: string;
   exercisesPath: string;
-  actions: Array<any>;
-  disableGrading: boolean;
-  disabledActions?: Array<string>;
+  disableGrading: boolean; // TODO: Deprecate
+  actions: Array<string>; // TODO: Deprecate
+  // TODO: nameExerciseValidation
+  disabledActions?: Array<TConfigAction>;
   compiler: TCompiler;
-  exercises?: Array<IExercise>;
-  currentExercise?: IExercise;
   publicPath: string;
   publicUrl?: string;
-  graded: boolean;
   skills: Array<string>;
-  session: number;
   runHook: (...agrs: Array<any>) => void;
   testingFinishedCallback: (arg: any | undefined) => void;
 }
@@ -59,7 +65,10 @@ export interface IConfig {
 export type TConfigObjAttributes = "config" | "exercises" | "grading";
 
 export interface IConfigObj {
+  session?: number;
   currentExercise?: any;
   config?: IConfig;
   exercises?: Array<IExercise>;
+  confPath?: IConfigPath;
+  address?: string; // Maybe
 }

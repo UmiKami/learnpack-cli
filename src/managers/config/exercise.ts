@@ -136,7 +136,7 @@ export const exercise = (
       }
     },
     getTestReport: function () {
-      const _path = `${config?.confPath.base}/reports/${this.slug}.json`;
+      const _path = `${configObject?.confPath?.base}/reports/${this.slug}.json`;
       if (!fs.existsSync(_path)) return {};
 
       const content = fs.readFileSync(_path);
@@ -150,6 +150,7 @@ export const exercise = (
 
 export const validateExerciseDirectoryName = (str: string) => {
   if (str === "./") return true;
+  // TODO: Add nameValidationREgex from the config
   const regex = /^(\d{2,3}(\.\d{1,2})?-([\dA-Za-z]+(-|_)?)+)$/;
   return regex.test(str);
 };

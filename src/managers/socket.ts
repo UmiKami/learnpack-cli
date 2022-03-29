@@ -26,8 +26,7 @@ const SocketManager: ISocket = {
     // avoid adding the "test" action if grading is disabled
     if (
       actions.includes("test") &&
-      (this.config?.disableGrading ||
-        this.config?.disabledActions?.includes("test"))
+      this.config?.disabledActions?.includes("test")
     ) {
       actions = actions.filter((a: TAction) => a !== "test");
     }
@@ -55,11 +54,6 @@ const SocketManager: ISocket = {
   ) {
     this.config = config;
     this.isTestingEnvironment = isTestingEnvironment;
-
-    // remove test action if grading is disabled
-    this.allowedActions = config.actions.filter((act: TAction) =>
-      config.disableGrading ? act !== "test" : true
-    );
 
     this.socket = new Server(server, { allowEIO3: true });
 

@@ -107,7 +107,7 @@ const dequeue = () => {
     actions = [];
   }
 
-  const action = incomingActions[actions.length];
+  const action = incomingActions[incomingActions.length - 1];
   logger.debug("Dequeing action ", action);
   actions.push(action);
   return action;
