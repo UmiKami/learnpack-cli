@@ -1,14 +1,12 @@
 import { IExercise } from "./exercise-obj";
 
-export interface IConfigPath {
-  base: string;
-}
+export type TGrading = "isolated" | "incremental" | "no-grading";
 
-export interface IEditor {
-  mode?: TMode;
-  version: string;
-  agent?: string;
-}
+export type TMode = "preview" | "standalone";
+
+export type TConfigAction = "test" | "build" | "tutorial" | "reset";
+
+export type TConfigObjAttributes = "config" | "exercises" | "grading";
 
 export type TCompiler =
   | "webpack"
@@ -18,11 +16,15 @@ export type TCompiler =
   | "css"
   | "html";
 
-export type TGrading = "isolated" | "incremental" | "no-grading";
+export interface IConfigPath {
+  base: string;
+}
 
-export type TMode = "vscode" | "standalone";
-
-export type TConfigAction = "test" | "build" | "tutorial" | "reset";
+export interface IEditor {
+  mode?: TMode;
+  version: string;
+  agent?: string;
+}
 
 export interface TEntries {
   python3?: string;
@@ -61,8 +63,6 @@ export interface IConfig {
   runHook: (...agrs: Array<any>) => void;
   testingFinishedCallback: (arg: any | undefined) => void;
 }
-
-export type TConfigObjAttributes = "config" | "exercises" | "grading";
 
 export interface IConfigObj {
   session?: number;

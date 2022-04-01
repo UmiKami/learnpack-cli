@@ -13,7 +13,7 @@ import * as http from "http";
 const SocketManager: ISocket = {
   socket: null,
   config: null,
-  allowedActions: null,
+  allowedActions: [],
   isTestingEnvironment: false,
   actionCallBacks: {
     clean: (_, s: { logs: Array<string> }) => {

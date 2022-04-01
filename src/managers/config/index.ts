@@ -150,7 +150,7 @@ export default async ({
 
   if (configObj.config && !configObj.config.editor.mode)
     configObj.config.editor.mode =
-      configObj.config.editor.agent === "localhost" ? "standalone" : "vscode";
+      configObj.config.editor.agent === "localhost" ? "standalone" : "preview";
 
   if (version && configObj.config) configObj.config.editor.version = version;
   else if (configObj.config && configObj.config.editor.version === null) {
