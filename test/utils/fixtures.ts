@@ -16,12 +16,14 @@ export const CONFIG_SAMPLE = {
     outputPath: '.learn/dist',
     publicPath: '/preview',
     publicUrl: 'http://localhost:3000',
+    exerciseNameValidationRegex: '/^(d{2,3}(.d{1,2})?-([dA-Za-z]+(-|_)?)+)$/',
+    language: 'auto',
     grading: 'isolated',
     exercisesPath: './exercises',
     webpackTemplate: null,
     disableGrading: true,
     disabledActions: [],
-    actions: ['build', 'test', 'reset'],
+    actions: [],
     entries: {
       html: 'index.html',
       vanillajs: 'index.js',
@@ -39,16 +41,12 @@ export const CONFIG_SAMPLE = {
     description:
       'Step by step, go over all the most important DOM concepts and methods: Use javascript to manipulate styles, html elements.',
     duration: 8,
-    difficulty: 'easy',
-    config: {
-      disableGrading: true,
-      editor: {
-        version: '1.0.72',
-      },
-    },
-    session: 6_941_983_401_542_737_000,
     translations: [],
+    difficulty: 'easy',
   },
+  session: 6_941_983_401_542_737_000,
+  address: 'http://localhost',
+  currentExercise: null,
   exercises: [
     {
       position: 0,

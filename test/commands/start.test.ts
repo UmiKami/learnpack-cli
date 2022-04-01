@@ -79,6 +79,7 @@ describe('start', () => {
   )
 
   test
+  .skip()
   .nock('https://github.com', api =>
     (api as any)
     .head(`/learnpack/coding-ide/blob/${EDITOR_VERSION}/dist`)
