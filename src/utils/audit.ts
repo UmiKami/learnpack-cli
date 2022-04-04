@@ -120,7 +120,7 @@ export default {
           for (const [i, error] of errors.entries())
             Console.error(
               `${i + 1}) ${error.msg} ${
-                error.exercise !== null ? `(Exercise: ${error.exercise})` : ''
+                error.exercise ? `(Exercise: ${error.exercise})` : ''
               }`,
             )
 
