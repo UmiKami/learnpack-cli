@@ -1,8 +1,10 @@
-import { IConfig } from "./config";
-import { Server } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { TAction, ICallback } from "./action";
-import { TStatus } from "./status";
+import {IConfig} from './config'
+import {Server} from 'socket.io'
+import {DefaultEventsMap} from 'socket.io/dist/typed-events'
+import {TAction, ICallback} from './action'
+import {TStatus} from './status'
+
+export type TPossibleActions = 'build' | 'test' | 'reset' | 'tutorial';
 
 export interface ISocket {
   socket: Server<
@@ -12,8 +14,9 @@ export interface ISocket {
     any
   > | null;
   config: IConfig | null;
-  allowedActions: Array<TAction> | null;
+  allowedActions: Array<TPossibleActions>;
   actionCallBacks: { [key: string]: ICallback };
+  possibleActions: Array<TPossibleActions>;
   isTestingEnvironment: boolean;
   addAllowed: (actions: any) => void;
   removeAllowed: (actions: any) => void;

@@ -23,3 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### March 2, 2022
 
 - Added missing functionalities to call the dispatcher with the values which was making the build functionality to be broken.
+
+### April 4. 2022
+
+- Solved bug of actions weren't showing when you start the exercises.
