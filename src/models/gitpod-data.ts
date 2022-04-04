@@ -1,5 +1,5 @@
 import {Server} from 'socket.io'
-import {IConfig} from './config'
+import {IConfigObj} from './config'
 
 export type TFile = string;
 
@@ -9,11 +9,11 @@ export interface IGitpodData {
 
 export interface IGitpod {
   socket: Server | null;
-  config: IConfig | null;
+  config: IConfigObj | null;
   initialized: boolean;
   hasGPCommand: boolean;
-  init: (config?: IConfig) => void;
+  init: (config?: IConfigObj) => void;
   openFiles: (files: Array<TFile>) => Promise<boolean | undefined>;
-  setup: (config?: IConfig) => void;
+  setup: (config?: IConfigObj) => void;
   autosave: (value: string) => void;
 }

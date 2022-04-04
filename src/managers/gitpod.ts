@@ -4,14 +4,14 @@ import socket from './socket'
 import * as fs from 'fs'
 
 import {TFile, IGitpod} from '../models/gitpod-data'
-import {IConfig} from '../models/config'
+import {IConfigObj} from '../models/config'
 
 const Gitpod: IGitpod = {
   socket: null,
   config: null,
   initialized: false,
   hasGPCommand: false,
-  init: function (config?: IConfig) {
+  init: function (config?: IConfigObj) {
     if (this.initialized) {
       return
     }
@@ -38,7 +38,7 @@ const Gitpod: IGitpod = {
     this.init() // initilize gitpod config
 
     // gitpod will open files only on isolated mode
-    if (!this.config || this.config.grading !== 'isolated') {
+    if (!this.config || this.config.config?.grading !== 'isolated') {
       Console.debug(
         'Files cannot be automatically opened because we are not on isolated grading (only for isolated)',
       )
@@ -55,7 +55,7 @@ const Gitpod: IGitpod = {
 
     socket.log('ready', ['Ready to compile or test...'])
   },
-  setup(config?: IConfig) {
+  setup(config?: IConfigObj) {
     this.init(config) // initilize gitpod config
     this.autosave('on')
   },
