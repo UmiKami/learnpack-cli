@@ -27,3 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### April 4. 2022
 
 - Solved bug of actions weren't showing when you start the exercises.
+
+### April 5, 2022
+
+- The exercises' name validation won't be configurable yet, therefore I removed the property from the config object for now.
