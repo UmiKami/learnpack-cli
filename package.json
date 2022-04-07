@@ -117,6 +117,7 @@
   },
   "scripts": {
     "postpack": "rm -f oclif.manifest.json && eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pre": "node ./test/precommit/index.ts",
     "test": "NODE_ENV=test nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
