@@ -1,7 +1,5 @@
 import { IPluginConfig } from "../models/plugin-config";
-declare const _default: (
-  pluginConfig: IPluginConfig
-) => (args: any) => Promise<any>;
+declare const _default: (pluginConfig: IPluginConfig) => (args: any) => Promise<any>;
 /**
  * Main Plugin Runner, it defines the behavior of a learnpack plugin
  * dividing it in "actions" like: Compile, test, etc.

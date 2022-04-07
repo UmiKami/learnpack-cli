@@ -1,5 +1,5 @@
 declare const extensions: {
-  extensions: string[];
-  names: string[];
+    extensions: string[];
+    names: string[];
 };
 export default extensions;
