@@ -1,7 +1,7 @@
 {
   "name": "@learnpack/learnpack",
   "description": "Create, sell or download and take learning amazing learning packages",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Alejandro Sanchez @alesanchezr",
   "bin": {
     "learnpack": "bin/run"
@@ -90,7 +90,8 @@
     "oclif"
   ],
   "license": "UNLICENSED",
-  "main": "src/index.js",
+  "main": "../bin/index.js",
+  "types": "../bin/index.d.ts",
   "oclif": {
     "commands": "./src/commands",
     "bin": "learnpack",
