@@ -90,8 +90,8 @@
     "oclif"
   ],
   "license": "UNLICENSED",
-  "main": "../bin/index.js",
-  "types": "../bin/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "oclif": {
     "commands": "./src/commands",
     "bin": "learnpack",
