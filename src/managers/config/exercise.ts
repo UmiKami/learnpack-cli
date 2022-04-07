@@ -36,16 +36,20 @@ export const exercise = (
       }
       */
   const translations: { [key: string]: string } = {};
-  for (const file of files.filter((file) =>
+  for (const file of files.filter(file =>
     file.toLowerCase().includes("readme")
   )) {
     const parts = file.split(".");
-    if (parts.length === 3) translations[parts[1]] = file;
-    else translations["us"] = file;
+
+    if (parts.length === 3) 
+translations[parts[1]] = file;
+    else 
+translations.us = file;
   }
 
   // if the slug is a dot, it means there is not "exercises" folder, and its just a single README.md
-  if (slug === ".") slug = "default-index";
+  if (slug === ".") 
+slug = "default-index";
 
   const detected = detect(configObject, files);
 
@@ -58,7 +62,7 @@ export const exercise = (
     entry: detected?.entry ? path + "/" + detected.entry : null, // full path to the exercise entry
     title: slug || "Exercise",
     graded: files.some(
-      (file) =>
+      file =>
         file.toLowerCase().startsWith("test.") ||
         file.toLowerCase().startsWith("tests.")
     ),
@@ -68,16 +72,21 @@ export const exercise = (
       Array.isArray(exercises) &&
       typeof exercises[position] !== "undefined" &&
       path.slice(Math.max(0, path.indexOf("exercises/") + 10)) ===
-        exercises[position].slug
-        ? exercises[position].done
-        : false,
+        exercises[position].slug ?
+        exercises[position].done :
+        false,
     getReadme: function (lang = null) {
-      if (lang === "us") lang = null; // <-- english is default, no need to append it to the file name
+      if (lang === "us") 
+lang = null; // <-- english is default, no need to append it to the file name
+
       if (!fs.existsSync(`${this.path}/README${lang ? "." + lang : ""}.md`)) {
         Console.error(
           `Language ${lang} not found for exercise ${slug}, switching to default language`
         );
-        if (lang) lang = null;
+
+        if (lang) 
+lang = null;
+
         if (!fs.existsSync(`${this.path}/README${lang ? "." + lang : ""}.md`))
           throw new Error(
             "Readme file not found for exercise: " + this.path + "/README.md"
@@ -137,7 +146,9 @@ export const exercise = (
     },
     getTestReport: function () {
       const _path = `${configObject?.confPath?.base}/reports/${this.slug}.json`;
-      if (!fs.existsSync(_path)) return {};
+
+      if (!fs.existsSync(_path)) 
+return {};
 
       const content = fs.readFileSync(_path);
       const data = JSON.parse(`${content}`);
@@ -149,7 +160,8 @@ export const exercise = (
 };
 
 export const validateExerciseDirectoryName = (str: string) => {
-  if (str === "./") return true;
+  if (str === "./") 
+return true;
   // TODO: Add nameValidationREgex from the config
   const regex = /^(\d{2,3}(\.\d{1,2})?-([\dA-Za-z]+(-|_)?)+)$/;
   return regex.test(str);
@@ -209,29 +221,29 @@ export const detect = (
     );
   // A language was found on the config object, but this language will only be used as last resort, learnpack will try to guess each exercise language independently based on file extension (js, jsx, html, etc.)
 
-  let hasFiles = files.filter((f) => f.includes(".py"));
+  let hasFiles = files.filter(f => f.includes(".py"));
   if (hasFiles.length > 0)
     return {
       language: "python3",
-      entry: hasFiles.find((f) => config.entries.python3 === f),
+      entry: hasFiles.find(f => config.entries.python3 === f),
     };
 
-  hasFiles = files.filter((f) => f.includes(".java"));
+  hasFiles = files.filter(f => f.includes(".java"));
   if (hasFiles.length > 0)
     return {
       language: "java",
-      entry: hasFiles.find((f) => config.entries.java === f),
+      entry: hasFiles.find(f => config.entries.java === f),
     };
 
-  hasFiles = files.filter((f) => f.includes(".jsx"));
+  hasFiles = files.filter(f => f.includes(".jsx"));
   if (hasFiles.length > 0)
     return {
       language: "react",
-      entry: hasFiles.find((f) => config.entries.react === f),
+      entry: hasFiles.find(f => config.entries.react === f),
     };
-  const hasHTML = files.filter((f) => f.includes("index.html"));
-  const hasIndexJS = files.find((f) => f.includes("index.js"));
-  const hasJS = files.filter((f) => f.includes(".js"));
+  const hasHTML = files.filter(f => f.includes("index.html"));
+  const hasIndexJS = files.find(f => f.includes("index.js"));
+  const hasJS = files.filter(f => f.includes(".js"));
   // angular, vue, vanillajs needs to have at least 2 files (html,css,js),
   // the test.js and the entry file in js
   // if not its just another HTML
@@ -244,12 +256,12 @@ export const detect = (
   if (hasHTML.length > 0)
     return {
       language: "html",
-      entry: hasHTML.find((f) => config.entries.html === f),
+      entry: hasHTML.find(f => config.entries.html === f),
     };
   if (hasJS.length > 0)
     return {
       language: "node",
-      entry: hasJS.find((f) => config.entries.node === f),
+      entry: hasJS.find(f => config.entries.node === f),
     };
 
   return {

@@ -1,12 +1,12 @@
 function arrDiff(a1, a2) {
-  var a = [],
-    diff = [];
+  const a = [];
+  const diff = [];
 
-  for (var i = 0; i < a1.length; i++) {
+  for (const i of a1) {
     a[a1[i]] = true;
   }
 
-  for (var i = 0; i < a2.length; i++) {
+  for (const i of a2) {
     if (a[a2[i]]) {
       delete a[a2[i]];
     } else {
@@ -14,7 +14,8 @@ function arrDiff(a1, a2) {
     }
   }
 
-  for (var k in a) {
+  // eslint-disable-next-line
+  for (const k in a) {
     diff.push(k);
   }
 

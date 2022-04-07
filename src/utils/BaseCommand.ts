@@ -28,6 +28,7 @@ class BaseCommand extends Command {
         // process.emit('SIGINT')
       });
     }
+
     process.on("SIGINT", function () {
       Console.debug("Terminated (SIGINT)");
       process.exit();

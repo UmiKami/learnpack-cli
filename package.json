@@ -1,7 +1,7 @@
 {
   "name": "@learnpack/learnpack",
   "description": "Create, sell or download and take learning amazing learning packages",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "Alejandro Sanchez @alesanchezr",
   "bin": {
     "learnpack": "bin/run"
@@ -117,7 +117,6 @@
   },
   "scripts": {
     "postpack": "rm -f oclif.manifest.json && eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pre": "node ./test/precommit/index.ts",
     "test": "NODE_ENV=test nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",

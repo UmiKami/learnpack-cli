@@ -32,10 +32,12 @@ const fetch = async (url: string, options: IOptions = {}) => {
       headers: { ...headers, ...options.headers },
     } as any);
 
-    if (resp.status >= 200 && resp.status < 300) return await resp.json();
+    if (resp.status >= 200 && resp.status < 300) 
+return await resp.json();
     if (resp.status === 401)
       throw APIError("Invalid authentication credentials", 401);
-    else if (resp.status === 404) throw APIError("Package not found", 404);
+    else if (resp.status === 404) 
+throw APIError("Package not found", 404);
     else if (resp.status >= 500)
       throw APIError("Impossible to connect with the server", 500);
     else if (resp.status >= 400) {
@@ -52,7 +54,8 @@ const fetch = async (url: string, options: IOptions = {}) => {
       } else {
         throw APIError("Uknown error");
       }
-    } else throw APIError("Uknown error");
+    } else 
+throw APIError("Uknown error");
   } catch (error) {
     Console.error((error as TypeError).message);
     throw error;
@@ -88,7 +91,8 @@ const publish = async (config: any) => {
   ];
 
   const payload: { [key: string]: string } = {};
-  for (const k of keys) config[k] ? (payload[k] = config[k]) : null;
+  for (const k of keys) 
+config[k] ? (payload[k] = config[k]) : null;
   try {
     console.log("Package to publish:", payload);
     cli.action.start("Updating package information...");
@@ -134,7 +138,8 @@ const getPackage = async (slug: string) => {
   } catch (error) {
     if ((error as any).status === 404)
       Console.error(`Package ${slug} does not exist`);
-    else Console.error(`Package ${slug} does not exist`);
+    else 
+Console.error(`Package ${slug} does not exist`);
     Console.debug(error);
     throw error;
   }
@@ -150,7 +155,8 @@ const getLangs = async () => {
   } catch (error) {
     if ((error as any).status === 404)
       Console.error("Package slug does not exist");
-    else Console.error("Package slug does not exist");
+    else 
+Console.error("Package slug does not exist");
     Console.debug(error);
     throw error;
   }

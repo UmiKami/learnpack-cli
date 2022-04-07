@@ -51,7 +51,6 @@ module.exports = async function ({ socket, files, config, slug }: {socket: ISock
     socket.log('testing-success', [stdout || stderr].concat(["😁Everything is amazing!"]));
     Console.success("Everything is amazing!");
 
-
     bcActivity.activity('exercise_success', {
       language: config.language,
       slug: slug,
@@ -63,7 +62,6 @@ module.exports = async function ({ socket, files, config, slug }: {socket: ISock
       return e;
     });
   }
-
 
   if (typeof testingConfig.cleanup !== "undefined") {
     if (typeof testingConfig.cleanup === 'function' || typeof testingConfig.cleanup === 'object') {

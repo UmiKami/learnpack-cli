@@ -36,7 +36,7 @@ const getConfigPath = () => {
     "bc.json",
     ".breathecode/bc.json",
   ];
-  const config = possibleFileNames.find((file) => fs.existsSync(file)) || null;
+  const config = possibleFileNames.find(file => fs.existsSync(file)) || null;
   if (config && fs.existsSync(".breathecode"))
     return { config, base: ".breathecode" };
   if (config === null)
@@ -48,7 +48,7 @@ const getConfigPath = () => {
 
 const getExercisesPath = (base: string) => {
   const possibleFileNames = ["./exercises", base + "/exercises", "./"];
-  return possibleFileNames.find((file) => fs.existsSync(file)) || null;
+  return possibleFileNames.find(file => fs.existsSync(file)) || null;
 };
 
 const getGitpodAddress = () => {
@@ -124,9 +124,9 @@ export default async ({
 
   Console.debug("This is your configuration object: ", {
     ...configObj,
-    exercises: configObj.exercises
-      ? configObj.exercises.map((e) => e.slug)
-      : [],
+    exercises: configObj.exercises ?
+      configObj.exercises.map(e => e.slug) :
+      [],
   });
 
   // auto detect agent (if possible)
@@ -135,7 +135,7 @@ export default async ({
     configObj.address = getGitpodAddress();
     configObj.config.publicUrl = `https://${
       configObj.config.port
-    }-${configObj.address.slice(8)}`;
+    }-${configObj.address?.slice(8)}`;
   } else if (configObj.config && !configObj.config.editor.agent) {
     configObj.config.editor.agent = "localhost";
   }
@@ -152,7 +152,8 @@ export default async ({
     configObj.config.editor.mode =
       configObj.config.editor.agent === "localhost" ? "standalone" : "preview";
 
-  if (version && configObj.config) configObj.config.editor.version = version;
+  if (version && configObj.config) 
+configObj.config.editor.version = version;
   else if (configObj.config && configObj.config.editor.version === null) {
     Console.debug("Config version not found, downloading default.");
     const resp = await fetch(
@@ -176,14 +177,16 @@ export default async ({
         const map: any = {
           python3: "python",
         };
-        if (map[_l]) return map[_l];
+        if (map[_l]) 
+return map[_l];
         return _l;
       };
 
       // decode aliases
       language = alias(language);
 
-      if (this.validLanguages[language]) return true;
+      if (this.validLanguages[language]) 
+return true;
 
       Console.debug(`Validating engine for ${language} compilation`);
       let result = shell.exec("learnpack plugins", { silent: true });
@@ -242,12 +245,13 @@ export default async ({
           fs.unlinkSync(configObj.config.dirPath + "/vscode_queue.json");
       }
     },
-    getExercise: (slug) => {
+    getExercise: slug => {
       Console.debug("ExercisePath Slug", slug);
       const exercise = (configObj.exercises || []).find(
-        (ex) => ex.slug === slug
+        ex => ex.slug === slug
       );
-      if (!exercise) throw ValidationError(`Exercise ${slug} not found`);
+      if (!exercise) 
+throw ValidationError(`Exercise ${slug} not found`);
 
       return exercise;
     },
@@ -266,7 +270,8 @@ export default async ({
       exercise.files.forEach((f: IFile) => {
         if (configObj.config) {
           const _path = configObj.config.outputPath + "/" + f.name;
-          if (f.hidden === false && fs.existsSync(_path)) fs.unlinkSync(_path);
+          if (f.hidden === false && fs.existsSync(_path)) 
+fs.unlinkSync(_path);
         }
       });
 
@@ -276,7 +281,7 @@ export default async ({
       configObj.currentExercise = null;
       this.save();
     },
-    reset: (slug) => {
+    reset: slug => {
       if (
         configObj.config &&
         !fs.existsSync(`${configObj.config.dirPath}/resets/` + slug)
@@ -284,7 +289,7 @@ export default async ({
         throw ValidationError("Could not find the original files for " + slug);
 
       const exercise = (configObj.exercises || []).find(
-        (ex) => ex.slug === slug
+        ex => ex.slug === slug
       );
       if (!exercise)
         throw ValidationError(
@@ -310,7 +315,8 @@ export default async ({
         if (name === path.basename(configObj?.config?.dirPath || ""))
           return false;
         // ignore folders that start with a dot
-        if (name.charAt(0) === "." || name.charAt(0) === "_") return false;
+        if (name.charAt(0) === "." || name.charAt(0) === "_") 
+return false;
 
         return fs.lstatSync(source).isDirectory();
       };
@@ -318,10 +324,11 @@ export default async ({
       const getDirectories = (source: string) =>
         fs
           .readdirSync(source)
-          .map((name) => path.join(source, name))
+          .map(name => path.join(source, name))
           .filter(isDirectory);
       // add the .learn folder
-      if (!fs.existsSync(confPath.base)) fs.mkdirSync(confPath.base);
+      if (!fs.existsSync(confPath.base)) 
+fs.mkdirSync(confPath.base);
       // add the outout folder where webpack will publish the the html/css/js files
       if (
         configObj.config &&
@@ -335,11 +342,11 @@ export default async ({
         configObj?.config?.exercisesPath || ""
       );
       configObj.exercises =
-        grupedByDirectory.length > 0
-          ? grupedByDirectory.map((path, position) =>
+        grupedByDirectory.length > 0 ?
+          grupedByDirectory.map((path, position) =>
               exercise(path, position, configObj)
-            )
-          : [exercise(configObj?.config?.exercisesPath || "", 0, configObj)];
+            ) :
+          [exercise(configObj?.config?.exercisesPath || "", 0, configObj)];
       this.save();
     },
     watchIndex: function (onChange: () => void) {
@@ -353,9 +360,10 @@ export default async ({
         .then((/* eventname, filename */) => {
           Console.debug("Changes detected on your exercises");
           this.buildIndex();
-          if (onChange) onChange();
+          if (onChange) 
+onChange();
         })
-        .catch((error) => {
+        .catch(error => {
           throw error;
         });
     },
@@ -379,7 +387,6 @@ export default async ({
 };
 
 function deepMerge(...sources: any): any {
-  // eslint-disable-next-line
   let acc: any = {};
   for (const source of sources) {
     if (Array.isArray(source)) {
@@ -395,7 +402,8 @@ function deepMerge(...sources: any): any {
           value = deepMerge(acc[key], value);
         }
 
-        if (value !== undefined) acc = { ...acc, [key]: value };
+        if (value !== undefined) 
+acc = { ...acc, [key]: value };
       }
     }
   }

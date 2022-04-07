@@ -29,7 +29,8 @@ const loadDispatcher = (opts: any) => {
 
   let exists = fs.existsSync(opts.path);
   if (opts.create) {
-    if (exists) actions.push({ name: "reset", time: now() });
+    if (exists) 
+actions.push({ name: "reset", time: now() });
     fs.writeFileSync(opts.path, JSON.stringify(actions), { flag: "w" });
     exists = true;
   }
@@ -41,7 +42,8 @@ const loadDispatcher = (opts: any) => {
   try {
     const content = fs.readFileSync(opts.path, "utf-8");
     incomingActions = JSON.parse(content);
-    if (!Array.isArray(incomingActions)) incomingActions = [];
+    if (!Array.isArray(incomingActions)) 
+incomingActions = [];
   } catch {
     incomingActions = [];
     logger.debug("Error loading VSCode Actions file");
@@ -51,13 +53,15 @@ const loadDispatcher = (opts: any) => {
   return incomingActions;
 };
 
+// eslint-disable-next-line
 const enqueue = (name: string, data: any | undefined = undefined) => {
   if (!Object.values(events).includes(name)) {
     logger.debug(`Invalid event ${name}`);
     throw new Error(`Invalid action ${name}`);
   }
 
-  if (!actions) actions = [];
+  if (!actions) 
+actions = [];
 
   actions.push({ name, time: now(), data: data });
   logger.debug(`EMIT -> ${name}:Exporting changes to ${options.path}`);
@@ -77,7 +81,7 @@ const loadFile = (filePath: string) => {
     throw new Error(`No queue.json file to load on ${filePath}`);
 
   const content = fs.readFileSync(filePath, "utf8");
-  const newHash = XXH.h32(content, 0xab_cd).toString(16);
+  const newHash = XXH.h32(content, 0xAB_CD).toString(16);
   const isUpdated = lastHash !== newHash;
   lastHash = newHash;
   const incomingActions = JSON.parse(content);
@@ -86,7 +90,8 @@ const loadFile = (filePath: string) => {
 
 const dequeue = () => {
   // first time dequeue loads
-  if (!actions) actions = [];
+  if (!actions) 
+actions = [];
 
   const { isUpdated, incomingActions } = loadFile(options.path || "");
 
@@ -147,7 +152,8 @@ const onPull = (callback: (T?: any) => any) => {
     watcher = chokidar.watch(`${options.path}`, {
       persistent: true,
     });
-  } else logger.debug("Already watching queue path");
+  } else 
+logger.debug("Already watching queue path");
 
   watcher.on("add", () => pull(callback)).on("change", () => pull(callback));
 
@@ -172,7 +178,7 @@ const onReset = (callback: (T?: any) => any) => {
 
 export default {
   events,
-  dispatcher: (opts = {}) => {
+  dispatcher: (opts: any = {}) => {
     if (!actions) {
       options = { ...options, ...opts };
       logger.debug("Initializing queue dispatcher", options);
@@ -181,7 +187,7 @@ export default {
 
     return { enqueue, events };
   },
-  listener: (opts = {}) => {
+  listener: (opts: any = {}) => {
     if (!actions) {
       options = { ...options, ...opts };
       logger.debug("Initializing queue listener", options);

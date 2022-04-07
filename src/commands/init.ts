@@ -1,6 +1,7 @@
 import { flags } from "@oclif/command";
 import BaseCommand from "../utils/BaseCommand";
 
+// eslint-disable-next-line
 import * as fs from "fs-extra";
 import * as prompts from "prompts";
 import cli from "cli-ux";
@@ -110,6 +111,7 @@ class InitComand extends BaseCommand {
     await fs.copySync(templatesDir, "./");
 
     // Creating README files
+    // eslint-disable-next-line
     languages.forEach((language) => {
       const readmeFilename = `README${language !== "en" ? `.${language}` : ""}`;
       fs.writeFileSync(

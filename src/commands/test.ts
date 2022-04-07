@@ -11,6 +11,7 @@ class TestCommand extends SessionCommand {
     const { flags } = this.parse(TestCommand);
     await this.initSession(flags);
   }
+
   async run() {
     const {
       args: { exerciseSlug },
@@ -22,11 +23,9 @@ class TestCommand extends SessionCommand {
     let exercises: IExercise[] | undefined = [];
 
     // test all exercises
-    if (!exerciseSlug) {
-      exercises = this.configManager?.getAllExercises();
-    } else {
-      exercises = [this.configManager!.getExercise(exerciseSlug)];
-    }
+    !exerciseSlug ?
+      (exercises = this.configManager?.getAllExercises()) :
+      (exercises = [this.configManager!.getExercise(exerciseSlug)]);
 
     const exercisesQueue = new ExercisesQueue(exercises);
 
@@ -35,7 +34,7 @@ class TestCommand extends SessionCommand {
     let hasFailed = false;
     let failedTestsCount = 0;
     let successTestsCount = 0;
-    let testsToRunCount = exercisesQueue.size();
+    const testsToRunCount = exercisesQueue.size();
 
     configObject!.config!.testingFinishedCallback = ({ result }) => {
       if (result === "failed") {

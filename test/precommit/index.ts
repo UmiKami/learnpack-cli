@@ -1,6 +1,8 @@
 const fs = require("fs");
+// eslint-disable-next-line
 const arrDiff = require("./utils");
 const c = require("chalk");
+// eslint-disable-next-line
 const logger = require("../../src/utils/console");
 
 logger.log("Loading package.json");
@@ -10,7 +12,7 @@ const package = JSON.parse(packageContent);
 
 logger.log("Comparing oclif.plugins vs oclif.premanent_plugins");
 if (
-  JSON.stringify(package.oclif.plugins) !=
+  JSON.stringify(package.oclif.plugins) !==
   JSON.stringify(package.oclif.permanent_plugins)
 ) {
   logger.error(`There is a missmatch between oclif.plugins and oclif.permanent_plugins.

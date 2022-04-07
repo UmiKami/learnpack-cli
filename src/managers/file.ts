@@ -57,13 +57,13 @@ export const downloadEditor = async (
 export const download = (url: string, dest: string) => {
   Console.debug("Downloading " + url);
   return new Promise((resolve, reject) => {
-    const request = https.get(url, (response) => {
+    const request = https.get(url, response => {
       if (response.statusCode === 200) {
         const file = fs.createWriteStream(dest, { flags: "wx" });
         file.on("finish", () => {
           resolve(true);
         });
-        file.on("error", (err) => {
+        file.on("error", err => {
           file.close();
           if (err.code === "EEXIST") {
             Console.debug("File already exists");
@@ -80,7 +80,7 @@ export const download = (url: string, dest: string) => {
         if (response.headers.location) {
           download(response.headers.location, dest)
             .then(() => resolve(/* */ ""))
-            .catch((error) => {
+            .catch(error => {
               Console.error(error);
               reject(error);
             });
@@ -95,7 +95,7 @@ export const download = (url: string, dest: string) => {
       }
     });
 
-    request.on("error", (err) => {
+    request.on("error", err => {
       reject(err.message);
     });
   });

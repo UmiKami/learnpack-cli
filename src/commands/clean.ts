@@ -8,7 +8,7 @@ class CleanCommand extends SessionCommand {
   Extra documentation goes here
   `;
 
-  static flags = {
+  static flags: any = {
     // name: flags.string({char: 'n', description: 'name to print'}),
   };
 

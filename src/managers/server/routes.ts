@@ -64,10 +64,11 @@ export default async function (
     }))
   */
 
-  //symbolic link to maintain path compatiblity
+  // symbolic link to maintain path compatiblity
   const fetchStaticAsset = withHandler((req, res) => {
-    let filePath = `${config?.dirPath}/assets/${req.params.filePath}`;
-    if (!fs.existsSync(filePath)) throw Error("File not found: " + filePath);
+    const filePath = `${config?.dirPath}/assets/${req.params.filePath}`;
+    if (!fs.existsSync(filePath))
+      throw new Error("File not found: " + filePath);
     const content = fs.readFileSync(filePath);
     res.write(content);
     res.end();
@@ -75,9 +76,9 @@ export default async function (
 
   app.get(
     `${
-      config?.dirPath.indexOf("./") === 0
-        ? config.dirPath.substring(1)
-        : config?.dirPath
+      config?.dirPath.indexOf("./") === 0 ?
+        config.dirPath.slice(1) :
+        config?.dirPath
     }/assets/:filePath`,
     fetchStaticAsset
   );
@@ -137,30 +138,34 @@ export default async function (
       dispatcher.enqueue(dispatcher.events.START_EXERCISE, req.params.slug);
 
       type TEntry = "python3" | "html" | "node" | "react" | "java";
-
-      const entries = Object.keys(config?.entries!).map(
-        (lang) => config?.entries[lang as TEntry]
+       
+      const entries = new Set(
+        Object.keys(config?.entries!).map(
+          lang => config?.entries[lang as TEntry]
+        )
       );
+
       // if we are in incremental grading, the entry file can by dinamically detected
       // based on the changes the student is making during the exercise
       if (config?.grading === "incremental") {
         const scanedFiles = fs.readdirSync("./");
 
         // update the file hierarchy with updates
-        exercise.files = exercise.files
-          .filter((f) => f.name.includes("test."))
-          .concat(filterFiles(scanedFiles));
+        exercise.files = [
+          ...exercise.files.filter(f => f.name.includes("test.")),
+          ...filterFiles(scanedFiles),
+        ];
         Console.debug(`Exercise updated files: `, exercise.files);
       }
 
       const detected = detect(
         configObject,
         exercise.files
-          .filter((fileName) => entries.includes(fileName.name))
-          .map((f) => f.name || f) as string[]
+          .filter(fileName => entries.has(fileName.name))
+          .map(f => f.name || f) as string[]
       );
 
-      //if a new language for the testing engine is detected, we replace it
+      // if a new language for the testing engine is detected, we replace it
       // if not we leave it as it was before
       if (config?.language && !["", "auto"].includes(config?.language)) {
         Console.debug(

@@ -1,27 +1,30 @@
 import * as chalk from "chalk";
 
 const getMatches = (reg: RegExp, content: string) => {
-  let inputs = [];
+  const inputs = [];
   let m;
   while ((m = reg.exec(content)) !== null) {
     // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === reg.lastIndex) reg.lastIndex++;
+    if (m.index === reg.lastIndex) 
+reg.lastIndex++;
 
     // The result can be accessed through the `m`-variable.
     inputs.push(m[1] || null);
   }
+
   return inputs;
 };
 
 const cleanStdout = (buffer: string, inputs: string[]) => {
   if (Array.isArray(inputs))
     for (let i = 0; i < inputs.length; i++)
-      if (inputs[i]) buffer = buffer.replace(inputs[i], "");
+      if (inputs[i]) 
+buffer = buffer.replace(inputs[i], "");
 
   return buffer;
 };
 
-const indent = (string: string, count: number = 1, options: any) => {
+const indent = (string: string, options: any, count = 1) => {
   options = {
     indent: " ",
     includeEmptyLines: false,
@@ -63,7 +66,7 @@ const indent = (string: string, count: number = 1, options: any) => {
 
 const Console = {
   // _debug: true,
-  _debug: process.env.DEBUG == "true",
+  _debug: process.env.DEBUG === "true",
   startDebug: function () {
     this._debug = true;
   },

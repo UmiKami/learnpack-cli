@@ -1,4 +1,5 @@
 import * as express from "express";
+// eslint-disable-next-line
 import * as cors from "cors";
 import * as http from "http";
 import Console from "../../utils/console";
@@ -36,7 +37,8 @@ export default async function (
       );
       Console.success(`\n            Open the exercise on this link:`);
       Console.log(`            ${config?.publicUrl}`);
-      if (config?.editor.mode === "standalone") cli.open(`${config.publicUrl}`);
+      if (config?.editor.mode === "standalone") 
+cli.open(`${config.publicUrl}`);
     }
   });
 
@@ -62,5 +64,6 @@ export default async function (
 
     server.close(callback);
   };
+
   return server;
 }

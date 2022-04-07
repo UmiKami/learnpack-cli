@@ -13,7 +13,7 @@ class PublishCommand extends SessionCommand {
   Extra documentation goes here
   `;
 
-  static flags = {
+  static flags: any = {
     // name: flags.string({char: 'n', description: 'name to print'}),
   };
 
@@ -36,7 +36,9 @@ class PublishCommand extends SessionCommand {
     const { flags, args } = this.parse(PublishCommand);
 
     // avoid annonymus sessions
+    // eslint-disable-next-line
     if (!this.session) return;
+
     Console.info(
       `Session found for ${this.session.payload.email}, publishing the package...`
     );

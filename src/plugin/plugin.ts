@@ -10,14 +10,14 @@ export default (pluginConfig: IPluginConfig) => {
     const { action, exercise, socket, configuration } = args;
 
     if (pluginConfig.language === undefined)
-      throw Error(`Missing language on the plugin configuration object`);
+      throw new Error(`Missing language on the plugin configuration object`);
 
     if (typeof action !== "string") {
-      throw Error("Missing action property on hook details");
+      throw new TypeError("Missing action property on hook details");
     }
 
     if (!exercise || exercise === undefined) {
-      throw Error("Missing exercise information");
+      throw new Error("Missing exercise information");
     }
 
     type actionType = "compile" | "test";
@@ -33,39 +33,40 @@ export default (pluginConfig: IPluginConfig) => {
       return () => null;
     }
 
-    if (!exercise.files || exercise.files.length == 0) {
-      throw Error(`No files to process`);
+    if (!exercise.files || exercise.files.length === 0) {
+      throw new Error(`No files to process`);
     }
 
     try {
       const _action = pluginConfig[action as actionType];
 
-      if (_action == null || typeof _action != "object")
-        throw Error(
+      if (_action === null || typeof _action !== "object")
+        throw new Error(
           `The ${pluginConfig.language} ${action} module must export an object configuration`
         );
       if (_action.validate === undefined)
-        throw Error(
+        throw new Error(
           `Missing validate method for ${pluginConfig.language} ${action}`
         );
       if (_action.run === undefined)
-        throw Error(
+        throw new Error(
           `Missing run method for ${pluginConfig.language} ${action}`
         );
       if (_action.dependencies !== undefined) {
         if (!Array.isArray(_action.dependencies))
-          throw Error(
+          throw new Error(
             `${action}.dependencies must be an array of package names`
           );
 
-        _action.dependencies.forEach((packageName) => {
+        for (const packageName of _action.dependencies) {
           if (!shell.which(packageName)) {
-            throw Error(
+            throw new Error(
               `🚫 You need to have ${packageName} installed to run test the exercises`
             );
           }
-        });
+        }
       }
+
       const valid = await _action.validate({ exercise, configuration });
       if (valid) {
         // look for the command standard implementation and execute it
@@ -84,8 +85,10 @@ export default (pluginConfig: IPluginConfig) => {
         return stdout;
       }
     } catch (error: any) {
-      if (error.type == undefined) socket.fatal(error);
-      else socket.error(error.type, error.stdout);
+      if (error.type === undefined) 
+socket.fatal(error);
+      else 
+socket.error(error.type, error.stdout);
     }
   };
 };

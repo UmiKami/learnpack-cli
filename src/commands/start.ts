@@ -74,9 +74,9 @@ export default class StartCommand extends SessionCommand {
         `Grading: ${config?.grading} ${
           config?.disabledActions?.includes("test") ? "(disabled)" : ""
         }, editor: ${config?.editor.mode} ${config?.editor.version}, for ${
-          Array.isArray(configObject?.exercises)
-            ? configObject?.exercises.length
-            : 0
+          Array.isArray(configObject?.exercises) ?
+            configObject?.exercises.length :
+            0
         } exercises found`
       );
 
@@ -223,8 +223,9 @@ export default class StartCommand extends SessionCommand {
         setTimeout(() => dispatcher.enqueue(dispatcher.events.RUNNING), 1000);
 
         // start watching for file changes
+         
         if (StartCommand.flags.watch)
-          this.configManager.watchIndex((_exercises) =>
+          this.configManager.watchIndex(_exercises =>
             socket.reload(null, _exercises)
           );
       }
