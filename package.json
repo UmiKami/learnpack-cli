@@ -94,7 +94,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "oclif": {
-    "commands": "./src/commands",
+    "commands": "./lib/commands",
     "bin": "learnpack",
     "plugins": [
       "@oclif/plugin-help",
