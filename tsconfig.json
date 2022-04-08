@@ -5,7 +5,7 @@
     // "esModuleInterop": true,  // <-- ADD THIS LINE
     "module": "commonjs",
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": "lib",
     "strict": true,
     "target": "es2017"
   },
