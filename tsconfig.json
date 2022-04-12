@@ -9,8 +9,14 @@
     "strict": true,
     "target": "es2017"
   },
+  "files": [
+    "README.md",
+    "README.es.md",
+    "README.ejs",
+    "README.es.ejs",
+    "gitignore.txt",
+  ],
   "include": [
-    "src/**/*",
-    "src/**/**/**/*"
+    "src/**/*"
   ]
 }
