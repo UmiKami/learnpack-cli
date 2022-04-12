@@ -31,3 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### April 5, 2022
 
 - The exercises' name validation won't be configurable yet, therefore I removed the property from the config object for now.
+
+### April 12, 2022
+
+- The templates folder doesn't exist when publishing the package.
