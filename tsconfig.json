@@ -10,7 +10,6 @@
     "target": "es2017"
   },
   "include": [
-    "src/**/*",
-    "src/utils/templates/*"
+    "src/*"
   ]
 }
