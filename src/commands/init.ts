@@ -104,7 +104,7 @@ class InitComand extends BaseCommand {
 
     const templatesDir = path.resolve(
       __dirname,
-      "../utils/templates/" + choices.grading || "no-grading"
+      "../../src/utils/templates/" + choices.grading || "no-grading"
     );
     if (!fs.existsSync(templatesDir))
       throw ValidationError(`Template ${templatesDir} does not exists`);
@@ -130,7 +130,7 @@ class InitComand extends BaseCommand {
 
     if (!fs.existsSync("./.gitignore"))
       fs.copyFile(
-        path.resolve(__dirname, "../utils/templates/gitignore.txt"),
+        path.resolve(__dirname, "../../src/utils/templates/gitignore.txt"),
         "./.gitignore"
       );
     fs.writeFileSync("./learn.json", JSON.stringify(packageInfo, null, 2));
