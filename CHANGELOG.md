@@ -35,3 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### April 12, 2022
 
 - The templates folder doesn't exist when publishing the package.
+
+### April 19, 2022
+
+- Hot Reload added. The webview will reload everytime the users changes a file inside the exercises folder.
+- Misspelled console.debug message fixed.
