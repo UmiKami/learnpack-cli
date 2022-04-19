@@ -144,7 +144,7 @@ const onPull = (callback: (T?: any) => any) => {
   try {
     loadFile(options.path || "");
   } catch {
-    logger.debug("No previeues queue file, waiting for it to be created...");
+    logger.debug("No previoues queue file, waiting for it to be created...");
   }
 
   if (!watcher) {
