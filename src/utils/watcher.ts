@@ -4,11 +4,10 @@ import * as debounce from "debounce";
 
 export default (path: string, reloadSocket: () => void) =>
   new Promise((resolve /* , reject */) => {
+    Console.debug("PATH:", path);
     const watcher = chokidar.watch(path, {
       // TODO: This watcher is not ready yet
-      // ignored: (_path: string, _stats: any) => {
-      //   return new RegExp(_path)
-      // },
+      ignored: /^(?=.*(\.\w+)$)(?!.*\.md$).*$/gm,
       ignoreInitial: true,
     });
     const onChange = (eventname: string, _filename: string) => {

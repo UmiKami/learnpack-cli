@@ -40,3 +40,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Hot Reload added. The webview will reload everytime the users changes a file inside the exercises folder.
 - Misspelled console.debug message fixed.
+- Hot Reload modified in order to only reload the webview when a md file is changed.
