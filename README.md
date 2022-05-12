@@ -1,6 +1,6 @@
 # learnpack
 
-Create, sell or download and take learning amazing learning packages
+Create, sell or download and take learning amazing learning packages.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/learnpack.svg)](https://npmjs.org/package/learnpack)
