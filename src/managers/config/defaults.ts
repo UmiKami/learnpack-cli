@@ -12,6 +12,7 @@ export default {
     publicPath: '/preview',
     publicUrl: null,
     language: 'auto',
+    autoPlay: true,
     grading: 'isolated', // [isolated, incremental]
     exercisesPath: './', // path to the folder that contains the exercises
     webpackTemplate: null, // if you want webpack to use an HTML template

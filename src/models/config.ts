@@ -54,6 +54,7 @@ export interface IConfig {
   exercisesPath: string;
   disableGrading: boolean; // TODO: Deprecate
   actions: Array<string>; // TODO: Deprecate
+  autoPlay: boolean;
   // TODO: nameExerciseValidation
   disabledActions?: Array<TConfigAction>;
   compiler: TCompiler;
