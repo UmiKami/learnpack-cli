@@ -3,32 +3,32 @@ export default {
     port: 3000,
     editor: {
       mode: null, // [standalone, preview]
-      agent: null, // [vscode, theia]
+      agent: null, // [vscode, gitpod, localhost]
       version: null,
     },
-    dirPath: './.learn',
-    configPath: './learn.json',
-    outputPath: './.learn/dist',
-    publicPath: '/preview',
+    dirPath: "./.learn",
+    configPath: "./learn.json",
+    outputPath: "./.learn/dist",
+    publicPath: "/preview",
     publicUrl: null,
-    language: 'auto',
+    language: "auto",
     autoPlay: true,
-    grading: 'isolated', // [isolated, incremental]
-    exercisesPath: './', // path to the folder that contains the exercises
+    grading: "isolated", // [isolated, incremental]
+    exercisesPath: "./", // path to the folder that contains the exercises
     webpackTemplate: null, // if you want webpack to use an HTML template
     disableGrading: false,
     disabledActions: [], // Possible: 'build', 'test' or 'reset'
     actions: [], // ⚠️ deprecated, leave empty )
     entries: {
-      html: 'index.html',
-      vanillajs: 'index.js',
-      react: 'app.jsx',
-      node: 'app.js',
-      python3: 'app.py',
-      java: 'app.java',
+      html: "index.html",
+      vanillajs: "index.js",
+      react: "app.jsx",
+      node: "app.js",
+      python3: "app.py",
+      java: "app.java",
     },
   },
-  address: 'http://localhost',
+  address: "http://localhost",
   currentExercise: null,
   exercises: [],
-}
+};

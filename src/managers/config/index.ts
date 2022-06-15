@@ -30,12 +30,7 @@ const chalk = require("chalk");
 /* exercise folder name standard */
 
 const getConfigPath = () => {
-  const possibleFileNames = [
-    "learn.json",
-    ".learn/learn.json",
-    "bc.json",
-    ".breathecode/bc.json",
-  ];
+  const possibleFileNames = ["learn.json", ".learn/learn.json"];
   const config = possibleFileNames.find(file => fs.existsSync(file)) || null;
   if (config && fs.existsSync(".breathecode"))
     return { config, base: ".breathecode" };
@@ -75,7 +70,6 @@ export default async ({
 
   if (confPath) {
     const bcContent = fs.readFileSync(confPath.config);
-
     let hiddenBcContent = {};
     if (fs.existsSync(confPath.base + "/config.json")) {
       hiddenBcContent = fs.readFileSync(confPath.base + "/config.json");
@@ -144,8 +138,8 @@ export default async ({
     configObj.config.publicUrl = `${configObj.address}:${configObj.config.port}`;
 
   // Assign default editor mode if not set already
-  if (configObj.config && mode !== null) {
-    configObj.config.editor.mode = (mode as TMode) || ("vscode" as TMode);
+  if (configObj.config && !mode) {
+    configObj.config.editor.mode = mode as TMode;
   }
 
   if (configObj.config && !configObj.config.editor.mode)
@@ -160,7 +154,7 @@ configObj.config.editor.version = version;
       "https://raw.githubusercontent.com/learnpack/coding-ide/learnpack/package.json"
     );
     const packageJSON = await resp.json();
-    configObj.config.editor.version = packageJSON.version || "1.0.72";
+    configObj.config.editor.version = packageJSON.version || "1.0.73";
   }
 
   if (configObj.config) {

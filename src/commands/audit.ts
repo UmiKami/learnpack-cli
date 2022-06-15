@@ -1,15 +1,15 @@
-import * as fs from 'fs'
-import {validateExerciseDirectoryName} from '../managers/config/exercise'
-import Console from '../utils/console'
-import Audit from '../utils/audit'
-import SessionCommand from '../utils/SessionCommand'
-import * as path from 'path'
-import {IFile} from '../models/file'
-import {IExercise} from '../models/exercise-obj'
-import {IFrontmatter} from '../models/front-matter'
-import {IAuditErrors} from '../models/audit-errors'
-import {ICounter} from '../models/counter'
-import {IFindings} from '../models/findings'
+import * as fs from "fs";
+import { validateExerciseDirectoryName } from "../managers/config/exercise";
+import Console from "../utils/console";
+import Audit from "../utils/audit";
+import SessionCommand from "../utils/SessionCommand";
+import * as path from "path";
+import { IFile } from "../models/file";
+import { IExercise } from "../models/exercise-obj";
+import { IFrontmatter } from "../models/front-matter";
+import { IAuditErrors } from "../models/audit-errors";
+import { ICounter } from "../models/counter";
+import { IFindings } from "../models/findings";
 
 // eslint-disable-next-line
 const fetch = require("node-fetch");
@@ -18,19 +18,19 @@ const fm = require("front-matter");
 
 class AuditCommand extends SessionCommand {
   async init() {
-    const {flags} = this.parse(AuditCommand)
-    await this.initSession(flags)
+    const { flags } = this.parse(AuditCommand);
+    await this.initSession(flags);
   }
 
   async run() {
-    Console.log('Running command audit...')
+    Console.log("Running command audit...");
 
     // Get configuration object.
-    let config = this.configManager?.get()
+    let config = this.configManager?.get();
 
     if (config) {
-      const errors: IAuditErrors[] = []
-      const warnings: IAuditErrors[] = []
+      const errors: IAuditErrors[] = [];
+      const warnings: IAuditErrors[] = [];
       const counter: ICounter = {
         images: {
           error: 0,
@@ -42,197 +42,198 @@ class AuditCommand extends SessionCommand {
         },
         exercises: 0,
         readmeFiles: 0,
-      }
+      };
 
       // Checks if learnpack clean has been run
-      Audit.checkLearnpackClean(config, errors)
+      Audit.checkLearnpackClean(config, errors);
 
       // Build exercises if they are not built yet.
       if (!config.exercises || config.exercises.length === 0) {
-        this.configManager?.buildIndex()
-        config = this.configManager?.get()
+        this.configManager?.buildIndex();
+        config = this.configManager?.get();
       }
 
       // Check if the exercises folder has some files within any ./exercise
-      const exercisesPath: string = config!.config!.exercisesPath
+      const exercisesPath: string = config!.config!.exercisesPath;
 
       fs.readdir(exercisesPath, (err, files) => {
         if (err) {
-          return console.log('Unable to scan directory: ' + err)
+          return console.log("Unable to scan directory: " + err);
         }
 
         // listing all files using forEach
         for (const file of files) {
           // Do whatever you want to do with the file
-          const filePath: string = path.join(exercisesPath, file)
+          const filePath: string = path.join(exercisesPath, file);
           if (fs.statSync(filePath).isFile())
             warnings.push({
               exercise: file!,
-              msg: 'This file is not inside any exercise folder.',
-            })
+              msg: "This file is not inside any exercise folder.",
+            });
         }
-      })
+      });
 
       // This function checks that each of the url's are working.
       const checkUrl = async (file: IFile, exercise: IExercise) => {
-        if (!fs.existsSync(file.path))
-          return false
-        const content: string = fs.readFileSync(file.path).toString()
-        const isEmpty = Audit.checkForEmptySpaces(content)
+        if (!fs.existsSync(file.path)) 
+return false;
+        const content: string = fs.readFileSync(file.path).toString();
+        const isEmpty = Audit.checkForEmptySpaces(content);
         if (isEmpty || !content)
           errors.push({
             exercise: exercise.title!,
             msg: `This file (${file.name}) doesn't have any content inside.`,
-          })
+          });
 
-        const frontmatter: IFrontmatter = fm(content)
+        const frontmatter: IFrontmatter = fm(content);
         for (const attribute in frontmatter.attributes) {
           if (
             Object.prototype.hasOwnProperty.call(
               frontmatter.attributes,
-              attribute,
+              attribute
             ) &&
-            (attribute === 'intro' || attribute === 'tutorial')
+            (attribute === "intro" || attribute === "tutorial")
           ) {
-            counter.links.total++
+            counter.links.total++;
             try {
               // eslint-disable-next-line
               let res = await fetch(frontmatter.attributes[attribute], {
-                method: 'HEAD',
-              })
+                method: "HEAD",
+              });
               if (!res.ok) {
-                counter.links.error++
+                counter.links.error++;
                 errors.push({
                   exercise: exercise.title!,
                   msg: `This link is broken (${res.ok}): ${frontmatter.attributes[attribute]}`,
-                })
+                });
               }
             } catch {
-              counter.links.error++
+              counter.links.error++;
               errors.push({
                 exercise: exercise.title,
                 msg: `This link is broken: ${frontmatter.attributes[attribute]}`,
-              })
+              });
             }
           }
         }
 
         // Check url's of each README file.
         const findings: IFindings = Audit.findInFile(
-          ['relativeImages', 'externalImages', 'markdownLinks'],
-          content,
-        )
+          ["relativeImages", "externalImages", "markdownLinks"],
+          content
+        );
         type findingsType =
-          | 'relativeImages'
-          | 'externalImages'
-          | 'markdownLinks'
-          | 'url'
-          | 'uploadcare';
+          | "relativeImages"
+          | "externalImages"
+          | "markdownLinks"
+          | "url"
+          | "uploadcare";
         for (const finding in findings) {
           if (Object.prototype.hasOwnProperty.call(findings, finding)) {
-            const obj = findings[finding as findingsType]
+            const obj = findings[finding as findingsType];
             // Valdites all the relative path images.
-            if (finding === 'relativeImages' && Object.keys(obj!).length > 0) {
+            if (finding === "relativeImages" && Object.keys(obj!).length > 0) {
               for (const img in obj) {
                 if (Object.prototype.hasOwnProperty.call(obj, img)) {
                   // Validates if the image is in the assets folder.
-                  counter.images.total++
+                  counter.images.total++;
                   const relativePath = path
-                  .relative(
-                    exercise.path.replace(/\\/gm, '/'),
-                    `${config!.config?.dirPath}/assets/${obj[img].relUrl}`,
-                  )
-                  .replace(/\\/gm, '/')
-                  if (relativePath !== obj[img].absUrl.split('?').shift()) {
-                    counter.images.error++
+                    .relative(
+                      exercise.path.replace(/\\/gm, "/"),
+                      `${config!.config?.dirPath}/assets/${obj[img].relUrl}`
+                    )
+                    .replace(/\\/gm, "/");
+                  if (relativePath !== obj[img].absUrl.split("?").shift()) {
+                    counter.images.error++;
                     errors.push({
                       exercise: exercise.title,
                       msg: `This relative path (${obj[img].relUrl}) is not pointing to the assets folder.`,
-                    })
+                    });
                   }
 
                   if (
                     !fs.existsSync(
-                      `${config!.config?.dirPath}/assets/${obj[img].relUrl}`,
+                      `${config!.config?.dirPath}/assets/${obj[img].relUrl}`
                     )
                   ) {
-                    counter.images.error++
+                    counter.images.error++;
                     errors.push({
                       exercise: exercise.title,
                       msg: `The file ${obj[img].relUrl} doesn't exist in the assets folder.`,
-                    })
+                    });
                   }
                 }
               }
             } else if (
-              finding === 'externalImages' &&
+              finding === "externalImages" &&
               Object.keys(obj!).length > 0
             ) {
               // Valdites all the aboslute path images.
               for (const img in obj) {
                 if (Object.prototype.hasOwnProperty.call(obj, img)) {
-                  counter.images.total++
+                  counter.images.total++;
                   if (
                     fs.existsSync(
                       `${config!.config?.dirPath}/assets${obj[img].mdUrl
-                      .split('?')
-                      .shift()}`,
+                        .split("?")
+                        .shift()}`
                     )
                   ) {
                     const relativePath = path
-                    .relative(
-                      exercise.path.replace(/\\/gm, '/'),
-                      `${config!.config?.dirPath}/assets/${obj[img].mdUrl}`,
-                    )
-                    .replace(/\\/gm, '/')
+                      .relative(
+                        exercise.path.replace(/\\/gm, "/"),
+                        `${config!.config?.dirPath}/assets/${obj[img].mdUrl}`
+                      )
+                      .replace(/\\/gm, "/");
                     warnings.push({
                       exercise: exercise.title,
                       msg: `On this exercise you have an image with an absolute path "${obj[img].absUrl}". We recommend you to replace it by the relative path: "${relativePath}".`,
-                    })
+                    });
                   }
 
                   try {
                     // eslint-disable-next-line
                     let res = await fetch(obj[img].absUrl, { method: "HEAD" });
                     if (!res.ok) {
-                      counter.images.error++
+                      counter.images.error++;
                       errors.push({
                         exercise: exercise.title,
                         msg: `This link is broken: ${obj[img].absUrl}`,
-                      })
+                      });
                     }
                   } catch {
-                    counter.images.error++
+                    counter.images.error++;
                     errors.push({
                       exercise: exercise.title,
                       msg: `This link is broken: ${obj[img].absUrl}`,
-                    })
+                    });
                   }
                 }
               }
             } else if (
-              finding === 'markdownLinks' &&
+              finding === "markdownLinks" &&
               Object.keys(obj!).length > 0
             ) {
               for (const link in obj) {
                 if (Object.prototype.hasOwnProperty.call(obj, link)) {
-                  counter.links.total++
+                  counter.links.total++;
                   try {
                     // eslint-disable-next-line
                     let res = await fetch(obj[link].mdUrl, { method: "HEAD" });
+                    Console.log("Response links:", obj[link].mdUrl, res);
                     if (res.status > 399 && res.status < 500) {
-                      counter.links.error++
+                      counter.links.error++;
                       errors.push({
                         exercise: exercise.title,
                         msg: `This link is broken: ${obj[link].mdUrl}`,
-                      })
+                      });
                     }
                   } catch {
-                    counter.links.error++
+                    counter.links.error++;
                     errors.push({
                       exercise: exercise.title,
                       msg: `This link is broken: ${obj[link].mdUrl}`,
-                    })
+                    });
                   }
                 }
               }
@@ -240,103 +241,103 @@ class AuditCommand extends SessionCommand {
           }
         }
 
-        return true
-      }
+        return true;
+      };
 
       // This function is being created because the find method doesn't work with promises.
       const find = async (file: IFile, lang: string, exercise: IExercise) => {
         if (file.name === lang) {
-          await checkUrl(file, exercise)
-          return true
+          await checkUrl(file, exercise);
+          return true;
         }
 
-        return false
-      }
+        return false;
+      };
 
-      Console.debug('config', config)
+      Console.debug("config", config);
 
-      Console.info(' Checking if the config file is fine...')
+      Console.info(" Checking if the config file is fine...");
       // These two lines check if the 'slug' property is inside the configuration object.
       Console.debug(
-        'Checking if the slug property is inside the configuration object...',
-      )
+        "Checking if the slug property is inside the configuration object..."
+      );
       if (!config!.config?.slug)
         errors.push({
           exercise: undefined,
-          msg: 'The slug property is not in the configuration object',
-        })
+          msg: "The slug property is not in the configuration object",
+        });
 
       // These two lines check if the 'repository' property is inside the configuration object.
       Console.debug(
-        'Checking if the repository property is inside the configuration object...',
-      )
+        "Checking if the repository property is inside the configuration object..."
+      );
       if (!config!.config?.repository)
         errors.push({
           exercise: undefined,
-          msg: 'The repository property is not in the configuration object',
-        })
-      else
-        Audit.isUrl(config!.config?.repository, errors, counter)
+          msg: "The repository property is not in the configuration object",
+        });
+      else 
+Audit.isUrl(config!.config?.repository, errors, counter);
 
       // These two lines check if the 'description' property is inside the configuration object.
       Console.debug(
-        'Checking if the description property is inside the configuration object...',
-      )
+        "Checking if the description property is inside the configuration object..."
+      );
       if (!config!.config?.description)
         errors.push({
           exercise: undefined,
-          msg: 'The description property is not in the configuration object',
-        })
+          msg: "The description property is not in the configuration object",
+        });
 
-      if (errors.length === 0)
-        Console.log('The config file is ok')
+      if (errors.length === 0) 
+Console.log("The config file is ok");
 
       // Validates if images and links are working at every README file.
-      const exercises = config!.exercises
-      const readmeFiles = []
+      const exercises = config!.exercises;
+      const readmeFiles = [];
 
       if (exercises && exercises.length > 0) {
-        Console.info(' Checking if the images are working...')
+        Console.info(" Checking if the images are working...");
         for (const index in exercises) {
           if (Object.prototype.hasOwnProperty.call(exercises, index)) {
-            const exercise = exercises[index]
+            const exercise = exercises[index];
             if (!validateExerciseDirectoryName(exercise.title))
               errors.push({
                 exercise: exercise.title,
                 msg: `The exercise ${exercise.title} has an invalid name.`,
-              })
-            let readmeFilesCount = {exercise: exercise.title, count: 0}
+              });
+            let readmeFilesCount = { exercise: exercise.title, count: 0 };
             if (Object.keys(exercise.translations!).length === 0)
               errors.push({
                 exercise: exercise.title,
                 msg: `The exercise ${exercise.title} doesn't have a README.md file.`,
-              })
+              });
 
             if (
-              exercise.language === 'python3' ||
-              exercise.language === 'python'
+              exercise.language === "python3" ||
+              exercise.language === "python"
             ) {
               for (const f of exercise.files.map(f => f)) {
-                if (f.path.includes('test.py') || f.path.includes('tests.py')) {
-                  const content = fs.readFileSync(f.path).toString()
-                  const isEmpty = Audit.checkForEmptySpaces(content)
+                if (f.path.includes("test.py") || f.path.includes("tests.py")) {
+                  const content = fs.readFileSync(f.path).toString();
+                  const isEmpty = Audit.checkForEmptySpaces(content);
                   if (isEmpty || !content)
                     errors.push({
                       exercise: exercise.title,
                       msg: `This file (${f.name}) doesn't have any content inside.`,
-                    })
+                    });
                 }
               }
             } else {
               for (const f of exercise.files.map(f => f)) {
-                if (f.path.includes('test.js') || f.path.includes('tests.js')) {
-                  const content = fs.readFileSync(f.path).toString()
-                  const isEmpty: boolean = Audit.checkForEmptySpaces(content)
+                if (f.path.includes("test.js") || f.path.includes("tests.js")) {
+                  const content = fs.readFileSync(f.path).toString();
+                  const isEmpty: boolean = Audit.checkForEmptySpaces(content);
                   if (isEmpty || !content)
                     errors.push({
                       exercise: exercise.title,
                       msg: `This file (${f.name}) doesn't have any content inside.`,
-                    })
+                    });
                 }
               }
             }
@@ -345,18 +346,18 @@ class AuditCommand extends SessionCommand {
               if (
                 Object.prototype.hasOwnProperty.call(
                   exercise.translations,
-                  lang,
+                  lang
                 )
               ) {
-                const files: any[] = []
-                const findResultPromises = []
+                const files: any[] = [];
+                const findResultPromises = [];
                 for (const file of exercise.files) {
                   const found = find(
                     file,
                     exercise.translations[lang],
-                    exercise,
-                  )
-                  findResultPromises.push(found)
+                    exercise
+                  );
+                  findResultPromises.push(found);
                 }
                 // eslint-disable-next-line
                 let findResults = await Promise.all(findResultPromises);
@@ -365,8 +366,8 @@ class AuditCommand extends SessionCommand {
                     readmeFilesCount = {
                       ...readmeFilesCount,
                       count: readmeFilesCount.count + 1,
-                    }
-                    files.push(found)
+                    };
+                    files.push(found);
                   }
                 }
 
@@ -374,66 +375,66 @@ class AuditCommand extends SessionCommand {
                   errors.push({
                     exercise: exercise.title,
                     msg: "This exercise doesn't have a README.md file.",
-                  })
+                  });
               }
             }
 
-            readmeFiles.push(readmeFilesCount)
+            readmeFiles.push(readmeFilesCount);
           }
         }
       } else
         errors.push({
           exercise: undefined,
-          msg: 'The exercises array is empty.',
-        })
+          msg: "The exercises array is empty.",
+        });
 
       Console.log(
         `${counter.images.total - counter.images.error} images ok from ${
           counter.images.total
-        }`,
-      )
+        }`
+      );
 
       Console.info(
-        " Checking if important files are missing... (README's, translations, gitignore...)",
-      )
+        " Checking if important files are missing... (README's, translations, gitignore...)"
+      );
       // Check if all the exercises has the same ammount of README's, this way we can check if they have the same ammount of translations.
-      const files: string[] = []
-      let count = 0
+      const files: string[] = [];
+      let count = 0;
       for (const item of readmeFiles) {
-        if (count < item.count)
-          count = item.count
+        if (count < item.count) 
+count = item.count;
       }
 
       for (const item of readmeFiles) {
-        if (item.count !== count)
-          files.push(` ${item.exercise}`)
+        if (item.count !== count) 
+files.push(` ${item.exercise}`);
       }
 
       if (files.length > 0) {
-        const filesString: string = files.join(',')
+        const filesString: string = files.join(",");
         warnings.push({
           exercise: undefined,
           msg:
             files.length === 1 ?
               `This exercise is missing translations:${filesString}` :
               `These exercises are missing translations:${filesString}`,
-        })
+        });
       }
 
       // Checks if the .gitignore file exists.
-      if (!fs.existsSync('.gitignore'))
+      if (!fs.existsSync(".gitignore"))
         warnings.push({
           exercise: undefined,
           msg: ".gitignore file doesn't exist",
-        })
+        });
 
-      counter.exercises = exercises!.length
+      counter.exercises = exercises!.length;
       for (const readme of readmeFiles) {
-        counter.readmeFiles += readme.count
+        counter.readmeFiles += readme.count;
       }
 
-      await Audit.showWarnings(warnings)
-      await Audit.showErrors(errors, counter)
+      await Audit.showWarnings(warnings);
+      await Audit.showErrors(errors, counter);
     }
   }
 }
@@ -453,10 +454,10 @@ learnpack audit checks for the following information in a repository:
     10. The exercses have the same translations. (Warning)
     11. The .gitignore file exists. (Warning)
     12. If there is a file within the exercises folder but not inside of any particular exercise's folder. (Warning)
-`
+`;
 
 AuditCommand.flags = {
   // name: flags.string({char: 'n', description: 'name to print'}),
-}
+};
 
-export default AuditCommand
+export default AuditCommand;
