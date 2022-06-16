@@ -125,6 +125,7 @@ export default async ({
 
   // auto detect agent (if possible)
   if (shell.which("gp") && configObj && configObj.config) {
+    configObj.config.editor.agent = "vscode";
     configObj.address = getGitpodAddress();
     configObj.config.publicUrl = `https://${
       configObj.config.port
