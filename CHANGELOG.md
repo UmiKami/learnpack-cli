@@ -45,3 +45,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### June 15, 2022
 
 - Bug on editor.mode value, it was being assigned "vscode" when the only acceptable values are "preview" or "standalone". "vscode" is an agent, not a mode.
+- "gitpod" removed as agent.
