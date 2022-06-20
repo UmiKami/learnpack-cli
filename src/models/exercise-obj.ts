@@ -13,10 +13,10 @@ export interface IExercise {
   graded?: boolean;
   translations?: { [key: string]: string };
   title: string;
-  getReadme: (lang: string | null) => any;
-  getFile: (name: string) => string | Buffer;
-  saveFile: (name: string, content: string) => void;
-  getTestReport: () => any;
+  getReadme?: (lang: string | null) => any;
+  getFile?: (name: string) => string | Buffer;
+  saveFile?: (name: string, content: string) => void;
+  getTestReport?: () => any;
   test?: (sessionConfig: any, config: IConfig, socket: ISocket) => void;
 }
 
