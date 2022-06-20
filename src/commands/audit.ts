@@ -219,7 +219,12 @@ return false;
                     // eslint-disable-next-line
                     let res = await fetch(obj[link].mdUrl, { method: "HEAD" });
                     if (res.status > 399 && res.status < 500) {
-                      Console.log("Response links:", obj[link].mdUrl, res);
+                      Console.log(
+                        "Response links:",
+                        res.status,
+                        obj[link].mdUrl,
+                        res
+                      );
                       counter.links.error++;
                       errors.push({
                         exercise: exercise.title,

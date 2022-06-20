@@ -99,10 +99,10 @@ export default async function (
         { params: { slug }, query: { lang } }: express.Request,
         res: express.Response
       ) => {
-        const excercise: IExercise = configManager.getExercise(slug);
+        const exercise: IExercise = configManager.getExercise(slug);
 
-        if (excercise) {
-          const readme = excercise.getReadme((lang as string) || null);
+        if (exercise && exercise.getReadme) {
+          const readme = exercise.getReadme((lang as string) || null);
           res.json(readme);
         } else {
           res.status(400);
@@ -115,8 +115,11 @@ export default async function (
     "/exercise/:slug/report",
     withHandler(
       ({ params: { slug } }: express.Request, res: express.Response) => {
-        const report = configManager.getExercise(slug).getTestReport();
-        res.json(JSON.stringify(report));
+        const exercise = configManager.getExercise(slug);
+        if (exercise && exercise.getTestReport) {
+          const report = exercise.getTestReport();
+          res.json(JSON.stringify(report));
+        }
       }
     )
   );
@@ -138,7 +141,7 @@ export default async function (
       dispatcher.enqueue(dispatcher.events.START_EXERCISE, req.params.slug);
 
       type TEntry = "python3" | "html" | "node" | "react" | "java";
-       
+
       const entries = new Set(
         Object.keys(config?.entries!).map(
           lang => config?.entries[lang as TEntry]
@@ -227,10 +230,11 @@ export default async function (
   app.get(
     "/exercise/:slug/file/:fileName",
     withHandler((req: express.Request, res: express.Response) => {
-      res.write(
-        configManager.getExercise(req.params.slug).getFile(req.params.fileName)
-      );
-      res.end();
+      const exercise = configManager.getExercise(req.params.slug);
+      if (exercise && exercise.getFile) {
+        res.write(exercise.getFile(req.params.fileName));
+        res.end();
+      }
     })
   );
 
@@ -239,11 +243,11 @@ export default async function (
     "/exercise/:slug/file/:fileName",
     textBodyParser,
     withHandler((req: express.Request, res: express.Response) => {
-      // const result =
-      configManager
-        .getExercise(req.params.slug)
-        .saveFile(req.params.fileName, req.body);
-      res.end();
+      const exercise = configManager.getExercise(req.params.slug);
+      if (exercise && exercise.saveFile) {
+        exercise.saveFile(req.params.fileName, req.body);
+        res.end();
+      }
     })
   );
 
