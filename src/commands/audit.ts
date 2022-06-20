@@ -48,10 +48,8 @@ class AuditCommand extends SessionCommand {
       Audit.checkLearnpackClean(config, errors);
 
       // Build exercises if they are not built yet.
-      if (!config.exercises || config.exercises.length === 0) {
-        this.configManager?.buildIndex();
-        config = this.configManager?.get();
-      }
+      this.configManager?.buildIndex();
+      config = this.configManager?.get();
 
       // Check if the exercises folder has some files within any ./exercise
       const exercisesPath: string = config!.config!.exercisesPath;
@@ -220,8 +218,8 @@ return false;
                   try {
                     // eslint-disable-next-line
                     let res = await fetch(obj[link].mdUrl, { method: "HEAD" });
-                    Console.log("Response links:", obj[link].mdUrl, res);
                     if (res.status > 399 && res.status < 500) {
+                      Console.log("Response links:", obj[link].mdUrl, res);
                       counter.links.error++;
                       errors.push({
                         exercise: exercise.title,
