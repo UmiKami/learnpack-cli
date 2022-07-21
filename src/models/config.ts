@@ -56,6 +56,7 @@ export interface IConfig {
   actions: Array<string>; // TODO: Deprecate
   autoPlay: boolean;
   // TODO: nameExerciseValidation
+  contact?: string;
   disabledActions?: Array<TConfigAction>;
   compiler: TCompiler;
   publicPath: string;

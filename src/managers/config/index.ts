@@ -350,7 +350,7 @@ fs.mkdirSync(confPath.base);
         );
 
       this.buildIndex();
-      watch(configObj?.config?.exercisesPath || "", onChange)
+      watch(configObj?.config?.exercisesPath || "", this, onChange)
         .then((/* eventname, filename */) => {
           Console.debug("Changes detected on your exercises");
           this.buildIndex();
