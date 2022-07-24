@@ -101,7 +101,8 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-warn-if-update-available",
+      "@learnpack/react"
     ],
     "permanent_plugins": [
       "@oclif/plugin-help",
