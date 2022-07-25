@@ -11,6 +11,7 @@ export default {
     outputPath: "./.learn/dist",
     publicPath: "/preview",
     publicUrl: null,
+    contact: "https://github.com/learnpack/learnpack/issues/new",
     language: "auto",
     autoPlay: true,
     grading: "isolated", // [isolated, incremental]
