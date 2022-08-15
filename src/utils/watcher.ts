@@ -16,11 +16,13 @@ export default (
     });
     const onChange = (eventname: string, _filename: string) => {
       resolve(eventname /* , filename */);
+      Console.log(_filename);
       if (
-        !/^(?=.*(\\\w+)$).*$/gm.test(_filename) ||
-        !/^(?=.*(\.\w+)$)(?!.*\.md$).*$/gm.test(_filename)
+        /^(?=.*(\\\w+)$).*$/gm.test(_filename) === false ||
+        /^(?=.*(\.\w+)$)(?!.*\.md$).*$/gm.test(_filename) === false
       ) {
         configManager.buildIndex();
+      } else {
         reloadSocket();
       }
     };

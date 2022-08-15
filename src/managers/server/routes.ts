@@ -192,6 +192,7 @@ export default async function (
         `Exercise detected entry: ${detected?.entry} and language ${exercise.language}`
       );
 
+      // exercises.graded and exercises.disableGrading deprecated.
       if (
         !exercise.graded ||
         config?.disableGrading ||
