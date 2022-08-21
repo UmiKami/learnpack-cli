@@ -46,3 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bug on editor.mode value, it was being assigned "vscode" when the only acceptable values are "preview" or "standalone". "vscode" is an agent, not a mode.
 - "gitpod" removed as agent.
+
+### August 21, 2022
+
+- "learnpack audit" command now working for projects as well, with completely different validations, according to this issue: https://github.com/4GeeksAcademy/About-4Geeks-Academy/issues/3099
+- Config will now have a property named "projectType", where you define if it is a "tutorial" or a "project". By default every learnpack project will be a tutorial.

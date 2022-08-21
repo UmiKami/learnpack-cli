@@ -1,47 +1,47 @@
-import {IAuditErrors} from '../models/audit-errors'
-import {IConfigObj} from '../models/config'
-import {ICounter} from '../models/counter'
-import {IFindings} from '../models/findings'
-import Console from './console'
+import { IAuditErrors } from "../models/audit";
+import { IConfigObj } from "../models/config";
+import { ICounter } from "../models/counter";
+import { IFindings } from "../models/findings";
+import Console from "./console";
 
 // eslint-disable-next-line
 const fetch = require("node-fetch");
-import * as fs from 'fs'
+import * as fs from "fs";
 
 export default {
   // This function checks if a url is valid.
   isUrl: async (url: string, errors: IAuditErrors[], counter: ICounter) => {
-    const regexUrl = /(https?:\/\/[\w./-]+)/gm
-    counter.links.total++
+    const regexUrl = /(https?:\/\/[\w./-]+)/gm;
+    counter.links.total++;
     if (!regexUrl.test(url)) {
-      counter.links.error++
+      counter.links.error++;
       errors.push({
         exercise: undefined,
         msg: `The repository value of the configuration file is not a link: ${url}`,
-      })
-      return false
+      });
+      return false;
     }
 
-    const res = await fetch(url, {method: 'HEAD'})
+    const res = await fetch(url, { method: "HEAD" });
     if (!res.ok) {
-      counter.links.error++
+      counter.links.error++;
       errors.push({
         exercise: undefined,
         msg: `The link of the repository is broken: ${url}`,
-      })
+      });
     }
 
-    return true
+    return true;
   },
   checkForEmptySpaces: (str: string) => {
-    const isEmpty = true
+    const isEmpty = true;
     for (const letter of str) {
-      if (letter !== ' ') {
-        return false
+      if (letter !== " ") {
+        return false;
       }
     }
 
-    return isEmpty
+    return isEmpty;
   },
   checkLearnpackClean: (configObj: IConfigObj, errors: IAuditErrors[]) => {
     if (
@@ -56,8 +56,8 @@ export default {
     ) {
       errors.push({
         exercise: undefined,
-        msg: 'You have to run learnpack clean command',
-      })
+        msg: "You have to run learnpack clean command",
+      });
     }
   },
   findInFile: (types: string[], content: string) => {
@@ -68,33 +68,33 @@ export default {
       markdownLinks: /(\s)+\[.*]\((https?:\/(\/[^)/]+)+\/?)\)/gm,
       url: /(https?:\/\/[\w./-]+)/gm,
       uploadcare: /https:\/\/ucarecdn.com\/(?:.*\/)*([\w./-]+)/gm,
-    }
+    };
 
-    const validTypes = Object.keys(regex)
-    if (!Array.isArray(types))
-      types = [types]
+    const validTypes = Object.keys(regex);
+    if (!Array.isArray(types)) 
+types = [types];
 
-    const findings: IFindings = {}
+    const findings: IFindings = {};
     type findingsType =
-      | 'relativeImages'
-      | 'externalImages'
-      | 'markdownLinks'
-      | 'url'
-      | 'uploadcare';
+      | "relativeImages"
+      | "externalImages"
+      | "markdownLinks"
+      | "url"
+      | "uploadcare";
 
     for (const type of types) {
-      if (!validTypes.includes(type))
-        throw new Error('Invalid type: ' + type)
-      else
-        findings[type as findingsType] = {}
+      if (!validTypes.includes(type)) 
+throw new Error("Invalid type: " + type);
+      else 
+findings[type as findingsType] = {};
     }
 
     for (const type of types) {
-      let m: RegExpExecArray
+      let m: RegExpExecArray;
       while ((m = regex[type].exec(content)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (m.index === regex.lastIndex) {
-          regex.lastIndex++
+          regex.lastIndex++;
         }
 
         // The result can be accessed through the `m`-variable.
@@ -105,58 +105,77 @@ export default {
           absUrl: m[1],
           mdUrl: m[2],
           relUrl: m[6],
-        }
+        };
       }
     }
 
-    return findings
+    return findings;
   },
   // This function checks if there are errors, and show them in the console at the end.
-  showErrors: (errors: IAuditErrors[], counter: ICounter) => {
+  showErrors: (errors: IAuditErrors[], counter: ICounter | undefined) => {
     return new Promise((resolve, reject) => {
       if (errors) {
         if (errors.length > 0) {
-          Console.log('Checking for errors...')
+          Console.log("Checking for errors...");
           for (const [i, error] of errors.entries())
             Console.error(
               `${i + 1}) ${error.msg} ${
-                error.exercise ? `(Exercise: ${error.exercise})` : ''
-              }`,
-            )
+                error.exercise ? `(Exercise: ${error.exercise})` : ""
+              }`
+            );
+          if (counter) {
+            Console.error(
+              ` We found ${errors.length} error${
+                errors.length > 1 ? "s" : ""
+              } among ${counter.images.total} images, ${
+                counter.links.total
+              } link, ${counter.readmeFiles} README files and ${
+                counter.exercises
+              } exercises.`
+            );
+          } else {
+            Console.error(
+              ` We found ${errors.length} error${
+                errors.length > 1 ? "s" : ""
+              } related with the project integrity.`
+            );
+          }
 
-          Console.error(
-            ` We found ${errors.length} errors among ${counter.images.total} images, ${counter.links.total} link, ${counter.readmeFiles} README files and ${counter.exercises} exercises.`,
-          )
-          process.exit(1)
+          process.exit(1);
         } else {
-          Console.success(
-            `We didn't find any errors in this repository among ${counter.images.total} images, ${counter.links.total} link, ${counter.readmeFiles} README files and ${counter.exercises} exercises.`,
-          )
-          process.exit(0)
+          if (counter) {
+            Console.success(
+              `We didn't find any errors in this repository among ${counter.images.total} images, ${counter.links.total} link, ${counter.readmeFiles} README files and ${counter.exercises} exercises.`
+            );
+          } else {
+            Console.success(`We didn't find any errors in this repository.`);
+          }
+
+          process.exit(0);
         }
       } else {
-        reject('Failed')
+        reject("Failed");
       }
-    })
+    });
   },
   // This function checks if there are warnings, and show them in the console at the end.
   showWarnings: (warnings: IAuditErrors[]) => {
     return new Promise((resolve, reject) => {
       if (warnings) {
         if (warnings.length > 0) {
-          Console.log('Checking for warnings...')
+          Console.log("Checking for warnings...");
           for (const [i, warning] of warnings.entries())
             Console.warning(
               `${i + 1}) ${warning.msg} ${
-                warning.exercise ? `File: ${warning.exercise}` : ''
-              }`,
-            )
+                warning.exercise ? `File: ${warning.exercise}` : ""
+              }`
+            );
         }
 
-        resolve('SUCCESS')
+        resolve("SUCCESS");
       } else {
-        reject('Failed')
+        reject("Failed");
       }
-    })
+    });
   },
-}
+};

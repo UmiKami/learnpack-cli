@@ -14,6 +14,7 @@ export default {
     contact: "https://github.com/learnpack/learnpack/issues/new",
     language: "auto",
     autoPlay: true,
+    projectType: "tutorial", // [tutorial, project]
     grading: "isolated", // [isolated, incremental]
     exercisesPath: "./", // path to the folder that contains the exercises
     webpackTemplate: null, // if you want webpack to use an HTML template

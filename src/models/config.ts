@@ -55,6 +55,7 @@ export interface IConfig {
   disableGrading: boolean; // TODO: Deprecate
   actions: Array<string>; // TODO: Deprecate
   autoPlay: boolean;
+  projectType?: string;
   // TODO: nameExerciseValidation
   contact?: string;
   disabledActions?: Array<TConfigAction>;
