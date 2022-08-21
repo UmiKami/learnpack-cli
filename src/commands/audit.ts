@@ -462,7 +462,9 @@ files.push(` ${item.exercise}`);
         const schema = await schemaResponse.json();
 
         // Checking the "learn.json" file:
-        const learnjson = JSON.parse(fs.readFileSync("./learn.json").toString());
+        const learnjson = JSON.parse(
+          fs.readFileSync("./learn.json").toString()
+        );
 
         if (!learnjson) {
           Console.error(
