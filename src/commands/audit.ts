@@ -581,7 +581,8 @@ valid = true;
           }
         }
 
-        await Audit.showErrors(errors);
+        /* eslint-disable-next-line */
+        await Audit.showErrors(errors, undefined);
       }
     }
   }
