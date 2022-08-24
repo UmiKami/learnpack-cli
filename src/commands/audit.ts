@@ -73,7 +73,6 @@ class AuditCommand extends SessionCommand {
         // This function is being created because the find method doesn't work with promises.
         const find = async (file: IFile, lang: string, exercise: IExercise) => {
           if (file.name === lang) {
-             
             await Audit.checkUrl(
               config!,
               file.path,
@@ -387,7 +386,8 @@ learnjson.validationStatus = "success";
       }
 
       await Audit.showWarnings(warnings);
-      await Audit.showErrors(errors);
+      // eslint-disable-next-line
+      await Audit.showErrors(errors, undefined);
     }
   }
 }
