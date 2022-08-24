@@ -7,14 +7,12 @@ import * as path from "path";
 import { IFile } from "../models/file";
 import { IExercise } from "../models/exercise-obj";
 import { IFrontmatter } from "../models/front-matter";
-import { IAuditErrors, ISchemaItem } from "../models/audit";
+import { IAuditErrors } from "../models/audit";
 import { ICounter } from "../models/counter";
 import { IFindings } from "../models/findings";
 
 // eslint-disable-next-line
 const fetch = require("node-fetch");
-// eslint-disable-next-line
-const fm = require("front-matter");
 
 class AuditCommand extends SessionCommand {
   async init() {
@@ -72,193 +70,19 @@ class AuditCommand extends SessionCommand {
           }
         });
 
-        // This function checks that each of the url's are working.
-        const checkUrl = async (file: IFile, exercise: IExercise) => {
-          if (!fs.existsSync(file.path)) 
-return false;
-          const content: string = fs.readFileSync(file.path).toString();
-          const isEmpty = Audit.checkForEmptySpaces(content);
-          if (isEmpty || !content)
-            errors.push({
-              exercise: exercise.title!,
-              msg: `This file (${file.name}) doesn't have any content inside.`,
-            });
-
-          const frontmatter: IFrontmatter = fm(content);
-          for (const attribute in frontmatter.attributes) {
-            if (
-              Object.prototype.hasOwnProperty.call(
-                frontmatter.attributes,
-                attribute
-              ) &&
-              (attribute === "intro" || attribute === "tutorial")
-            ) {
-              counter.links.total++;
-              try {
-                // eslint-disable-next-line
-                let res = await fetch(frontmatter.attributes[attribute], {
-                  method: "HEAD",
-                });
-                if (!res.ok) {
-                  counter.links.error++;
-                  errors.push({
-                    exercise: exercise.title!,
-                    msg: `This link is broken (${res.ok}): ${frontmatter.attributes[attribute]}`,
-                  });
-                }
-              } catch {
-                counter.links.error++;
-                errors.push({
-                  exercise: exercise.title,
-                  msg: `This link is broken: ${frontmatter.attributes[attribute]}`,
-                });
-              }
-            }
-          }
-
-          // Check url's of each README file.
-          const findings: IFindings = Audit.findInFile(
-            ["relativeImages", "externalImages", "markdownLinks"],
-            content
-          );
-          type findingsType =
-            | "relativeImages"
-            | "externalImages"
-            | "markdownLinks"
-            | "url"
-            | "uploadcare";
-          for (const finding in findings) {
-            if (Object.prototype.hasOwnProperty.call(findings, finding)) {
-              const obj = findings[finding as findingsType];
-              // Valdites all the relative path images.
-              if (
-                finding === "relativeImages" &&
-                Object.keys(obj!).length > 0
-              ) {
-                for (const img in obj) {
-                  if (Object.prototype.hasOwnProperty.call(obj, img)) {
-                    // Validates if the image is in the assets folder.
-                    counter.images.total++;
-                    const relativePath = path
-                      .relative(
-                        exercise.path.replace(/\\/gm, "/"),
-                        `${config!.config?.dirPath}/assets/${obj[img].relUrl}`
-                      )
-                      .replace(/\\/gm, "/");
-                    if (relativePath !== obj[img].absUrl.split("?").shift()) {
-                      counter.images.error++;
-                      errors.push({
-                        exercise: exercise.title,
-                        msg: `This relative path (${obj[img].relUrl}) is not pointing to the assets folder.`,
-                      });
-                    }
-
-                    if (
-                      !fs.existsSync(
-                        `${config!.config?.dirPath}/assets/${obj[img].relUrl}`
-                      )
-                    ) {
-                      counter.images.error++;
-                      errors.push({
-                        exercise: exercise.title,
-                        msg: `The file ${obj[img].relUrl} doesn't exist in the assets folder.`,
-                      });
-                    }
-                  }
-                }
-              } else if (
-                finding === "externalImages" &&
-                Object.keys(obj!).length > 0
-              ) {
-                // Valdites all the aboslute path images.
-                for (const img in obj) {
-                  if (Object.prototype.hasOwnProperty.call(obj, img)) {
-                    counter.images.total++;
-                    if (
-                      fs.existsSync(
-                        `${config!.config?.dirPath}/assets${obj[img].mdUrl
-                          .split("?")
-                          .shift()}`
-                      )
-                    ) {
-                      const relativePath = path
-                        .relative(
-                          exercise.path.replace(/\\/gm, "/"),
-                          `${config!.config?.dirPath}/assets/${obj[img].mdUrl}`
-                        )
-                        .replace(/\\/gm, "/");
-                      warnings.push({
-                        exercise: exercise.title,
-                        msg: `On this exercise you have an image with an absolute path "${obj[img].absUrl}". We recommend you to replace it by the relative path: "${relativePath}".`,
-                      });
-                    }
-
-                    try {
-                      // eslint-disable-next-line
-                      let res = await fetch(obj[img].absUrl, {
-                        method: "HEAD",
-                      });
-                      if (!res.ok) {
-                        counter.images.error++;
-                        errors.push({
-                          exercise: exercise.title,
-                          msg: `This link is broken: ${obj[img].absUrl}`,
-                        });
-                      }
-                    } catch {
-                      counter.images.error++;
-                      errors.push({
-                        exercise: exercise.title,
-                        msg: `This link is broken: ${obj[img].absUrl}`,
-                      });
-                    }
-                  }
-                }
-              } else if (
-                finding === "markdownLinks" &&
-                Object.keys(obj!).length > 0
-              ) {
-                for (const link in obj) {
-                  if (Object.prototype.hasOwnProperty.call(obj, link)) {
-                    counter.links.total++;
-                    try {
-                      // eslint-disable-next-line
-                      let res = await fetch(obj[link].mdUrl, {
-                        method: "HEAD",
-                      });
-                      if (res.status > 399 && res.status < 500) {
-                        Console.log(
-                          "Response links:",
-                          res.status,
-                          obj[link].mdUrl,
-                          res
-                        );
-                        counter.links.error++;
-                        errors.push({
-                          exercise: exercise.title,
-                          msg: `This link is broken: ${obj[link].mdUrl}`,
-                        });
-                      }
-                    } catch {
-                      counter.links.error++;
-                      errors.push({
-                        exercise: exercise.title,
-                        msg: `This link is broken: ${obj[link].mdUrl}`,
-                      });
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          return true;
-        };
-
         // This function is being created because the find method doesn't work with promises.
         const find = async (file: IFile, lang: string, exercise: IExercise) => {
           if (file.name === lang) {
-            await checkUrl(file, exercise);
+             
+            await Audit.checkUrl(
+              config!,
+              file.path,
+              file.name,
+              exercise,
+              errors,
+              warnings,
+              counter
+            );
             return true;
           }
 
@@ -449,11 +273,8 @@ files.push(` ${item.exercise}`);
         for (const readme of readmeFiles) {
           counter.readmeFiles += readme.count;
         }
-
-        await Audit.showWarnings(warnings);
-        await Audit.showErrors(errors, counter);
       } else {
-        // This is the audit for Projects
+        // This is the audit code for Projects
 
         // Getting the learn.json schema
         const schemaResponse = await fetch(
@@ -473,19 +294,67 @@ files.push(` ${item.exercise}`);
           process.exit(1);
         }
 
-        // Checkimg the README.md file
-        const readme = fs.readFileSync("./README.md").toString();
-        if (!readme)
-          errors.push({
-            exercise: undefined,
-            msg: 'There is no "README.md" located in the root of the project.',
-          });
+        // Checking the README.md files and possible translations.
+        let readmeFiles: any[] = [];
+        const translations: string[] = [];
+        const translationRegex = /README\.([a-z]{2,3})\.md/;
 
-        if (readme.length < 800)
-          errors.push({
-            exercise: undefined,
-            msg: `The "README.md" file should have at least 800 characters (It currently have: ${readme.length}).`,
-          });
+        try {
+          const data = await fs.promises.readdir("./");
+          readmeFiles = data.filter(file => file.includes("README"));
+          if (readmeFiles.length === 0)
+            errors.push({
+              exercise: undefined!,
+              msg: `There is no README file in the repository.`,
+            });
+        } catch (error) {
+          if (error)
+            Console.error(
+              "There was an error getting the directory files",
+              error
+            );
+        }
+
+        for (const readmeFile of readmeFiles) {
+          // Checking the language of each README file.
+          if (readmeFile === "README.md") 
+translations.push("us");
+          else {
+            const regexGroups = translationRegex.exec(readmeFile);
+            if (regexGroups) 
+translations.push(regexGroups[1]);
+          }
+
+          const readme = fs.readFileSync(path.resolve(readmeFile)).toString();
+
+          const isEmpty = Audit.checkForEmptySpaces(readme);
+          if (isEmpty || !readme) {
+            errors.push({
+              exercise: undefined!,
+              msg: `This file "${readmeFile}" doesn't have any content inside.`,
+            });
+            continue;
+          }
+
+          if (readme.length < 800)
+            errors.push({
+              exercise: undefined,
+              msg: `The "${readmeFile}" file should have at least 800 characters (It currently have: ${readme.length}).`,
+            });
+
+          // eslint-disable-next-line
+          await Audit.checkUrl(
+            config!,
+            path.resolve(readmeFile),
+            readmeFile,
+            undefined,
+            errors,
+            warnings
+          );
+        }
+
+        // Adding the translations to the learn.json
+        learnjson.translations = translations;
 
         // Checking if the preview image (from the learn.json) is OK.
         try {
@@ -503,87 +372,22 @@ files.push(` ${item.exercise}`);
           });
         }
 
-        // Checking each of the schema rules that are mandatory.
-        for (const schemaItem of schema) {
-          const learnItem = learnjson[schemaItem.key];
+        const date = new Date();
+        learnjson.validationAt = date.getTime();
 
-          if (schemaItem.mandatory) {
-            Console.info(`Checking for the "${schemaItem.key}" property...`);
+        if (errors.length > 0) 
+learnjson.validationStatus = "error";
+        else if (warnings.length > 0) 
+learnjson.validationStatus = "warning";
+        else 
+learnjson.validationStatus = "success";
 
-            if (!learnItem) {
-              errors.push({
-                exercise: undefined,
-                msg: `learn.json missing "${schemaItem.key}" mandatory property.`,
-              });
-              return;
-            }
-
-            if (schemaItem.max_size && learnItem.length > schemaItem.max_size)
-              errors.push({
-                exercise: undefined,
-                msg: `The "${schemaItem.key}" property should have a maximum size of ${schemaItem.max_size}`,
-              });
-
-            if (schemaItem.enum) {
-              if (typeof learnItem === "object") {
-                let valid = true;
-                for (const ele of learnItem) {
-                  if (!schemaItem.enum!.includes(ele)) 
-valid = false;
-                }
-
-                if (!valid)
-                  errors.push({
-                    exercise: undefined,
-                    msg: `The "${
-                      schemaItem.key
-                    }" property (current: ${learnItem}) should be one of the following values: ${schemaItem.enum.join(
-                      ", "
-                    )}.`,
-                  });
-              } else if (!schemaItem.enum.includes(learnItem.toLowerCase()))
-                errors.push({
-                  exercise: undefined,
-                  msg: `The "${
-                    schemaItem.key
-                  }" property (current: ${learnItem}) should be one of the following values: ${schemaItem.enum.join(
-                    ", "
-                  )}.`,
-                });
-            }
-
-            if (schemaItem.type === "url" && schemaItem.allowed_extensions) {
-              let valid = false;
-              for (const ele of schemaItem.allowed_extensions) {
-                if (learnItem.split(".").includes(ele)) 
-valid = true;
-              }
-
-              if (!valid)
-                errors.push({
-                  exercise: undefined,
-                  msg: `The "${
-                    schemaItem.key
-                  }" property should have one of the allowed extensions: ${schemaItem.allowed_extensions.join(
-                    ", "
-                  )}.`,
-                });
-            }
-
-            if (
-              schemaItem.max_item_size &&
-              learnItem.length > schemaItem.max_item_size
-            )
-              errors.push({
-                exercise: undefined,
-                msg: `The "${schemaItem.key}" property has more items than allowed (${schemaItem.max_item_size}).`,
-              });
-          }
-        }
-
-        /* eslint-disable-next-line */
-        await Audit.showErrors(errors, undefined);
+        // Writes the "learn.json" file with all the new properties
+        await fs.promises.writeFile("./learn.json", JSON.stringify(learnjson));
       }
+
+      await Audit.showWarnings(warnings);
+      await Audit.showErrors(errors);
     }
   }
 }

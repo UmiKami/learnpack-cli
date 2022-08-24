@@ -51,3 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "learnpack audit" command now working for projects as well, with completely different validations, according to this issue: https://github.com/4GeeksAcademy/About-4Geeks-Academy/issues/3099
 - Config will now have a property named "projectType", where you define if it is a "tutorial" or a "project". By default every learnpack project will be a tutorial.
+
+### August 24, 2022
+
+- "learnpack audit"'s project validation is now checking for the README's integrity, adding the validation status and validation timestamp.
+- "learnpack audit"'s is now ignoring twitter's links due bug related with them.
