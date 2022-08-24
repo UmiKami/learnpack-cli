@@ -348,7 +348,9 @@ translations.push(regexGroups[1]);
             readmeFile,
             undefined,
             errors,
-            warnings
+            warnings,
+            // eslint-disable-next-line
+            undefined
           );
         }
 
