@@ -56,3 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "learnpack audit"'s project validation is now checking for the README's integrity, adding the validation status and validation timestamp.
 - "learnpack audit"'s is now ignoring twitter's links due bug related with them.
+
+### August 27, 2022
+
+- "learnpack init" command default learn.json value simplified. Now it will only contain slug, description, difficulty, duration and grading.

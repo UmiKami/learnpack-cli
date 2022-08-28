@@ -9,7 +9,6 @@ import * as eta from "eta";
 
 import Console from "../utils/console";
 import { ValidationError } from "../utils/errors";
-import defaults from "../managers/config/defaults";
 
 import * as path from "path";
 
@@ -86,7 +85,6 @@ class InitComand extends BaseCommand {
     ]);
 
     const packageInfo = {
-      ...defaults.config,
       grading: choices.grading,
       difficulty: choices.difficulty,
       duration: parseInt(choices.duration),
