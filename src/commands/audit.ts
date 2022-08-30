@@ -360,7 +360,7 @@ translations.push(regexGroups[1]);
         // Checking if the preview image (from the learn.json) is OK.
         try {
           const res = await fetch(learnjson.preview, { method: "HEAD" });
-          if (!res.ok) {
+          if (res.status > 399 && res.status < 500) {
             errors.push({
               exercise: undefined,
               msg: `The link of the "preview" is broken: ${learnjson.preview}`,

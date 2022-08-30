@@ -60,3 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### August 27, 2022
 
 - "learnpack init" command default learn.json value simplified. Now it will only contain slug, description, difficulty, duration and grading.
+
+### August 30, 2022
+
+- "learnpack audit" checking for preview improved, now checking that the response status code is not between 399 and 500.
