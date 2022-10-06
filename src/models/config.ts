@@ -71,6 +71,8 @@ export interface IConfigObj {
   session?: number;
   currentExercise?: any;
   config?: IConfig;
+  bugs_link?: string;
+  video_solutions?: string | string[];
   exercises?: Array<IExercise>;
   confPath?: IConfigPath;
   address?: string; // Maybe
