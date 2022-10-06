@@ -33,4 +33,6 @@ export default {
   address: "http://localhost",
   currentExercise: null,
   exercises: [],
+  bugs_link: null,
+  video_solutions: false,
 };
