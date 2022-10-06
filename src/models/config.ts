@@ -62,6 +62,8 @@ export interface IConfig {
   compiler: TCompiler;
   publicPath: string;
   publicUrl?: string;
+  bugs_link?: string;
+  video_solutions?: string | string[];
   skills: Array<string>;
   runHook: (...agrs: Array<any>) => void;
   testingFinishedCallback: (arg: any | undefined) => void;
@@ -71,8 +73,7 @@ export interface IConfigObj {
   session?: number;
   currentExercise?: any;
   config?: IConfig;
-  bugs_link?: string;
-  video_solutions?: string | string[];
+
   exercises?: Array<IExercise>;
   confPath?: IConfigPath;
   address?: string; // Maybe
