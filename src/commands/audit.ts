@@ -120,7 +120,7 @@ class AuditCommand extends SessionCommand {
             msg: "The bugs_link property is not in the configuration object",
           });
         // check if the video_solutions property is in the configuration object
-        if (!config!.config?.video_solutions)
+        if (config!.config?.video_solutions === undefined)
           warnings.push({
             exercise: undefined,
             msg: "The video_solutions property is not in the configuration object",

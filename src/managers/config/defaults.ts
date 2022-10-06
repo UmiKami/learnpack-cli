@@ -34,5 +34,5 @@ export default {
   currentExercise: null,
   exercises: [],
   bugs_link: null,
-  video_solutions: [],
+  video_solutions: false,
 };
