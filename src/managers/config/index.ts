@@ -370,7 +370,6 @@ onChange();
         configObj.config.translations = [
           ...new Set(configObj.config.translations),
         ];
-
         fs.writeFileSync(
           configObj.config.dirPath + "/config.json",
           JSON.stringify(configObj, null, 4)

@@ -17,7 +17,15 @@ export default async function (
 ) {
   const { config } = configObj;
   const app = express();
-  const server = require("http").Server(app);
+  let server: any;
+
+  if (isTestingEnvironment) {
+    if (TEST_SERVER === undefined) 
+TEST_SERVER = require("http").Server(app);
+    server = TEST_SERVER;
+  } else 
+server = require("http").Server(app);
+
   app.use(cors());
 
   // app.use(function(req, res, next) {

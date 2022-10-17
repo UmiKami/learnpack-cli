@@ -62,7 +62,7 @@ slug = "default-index";
     entry: detected?.entry ? path + "/" + detected.entry : null, // full path to the exercise entry
     title: slug || "Exercise",
     graded: files.some(
-      file =>
+      (file: any) =>
         file.toLowerCase().startsWith("test.") ||
         file.toLowerCase().startsWith("tests.")
     ),
@@ -121,11 +121,18 @@ lang = null;
         fs.mkdirSync(`${config?.dirPath}/resets`);
       if (!fs.existsSync(`${config?.dirPath}/resets/` + this.slug)) {
         fs.mkdirSync(`${config?.dirPath}/resets/` + this.slug);
-        if (!fs.existsSync(`${config?.dirPath}/resets/${this.slug}/${name}`)) {
-          fs.writeFileSync(
-            `${config?.dirPath}/resets/${this.slug}/${name}`,
-            content
-          );
+        for (const _file of this.files) {
+          const fileContent = fs.readFileSync(_file.path);
+          if (
+            !fs.existsSync(
+              `${config?.dirPath}/resets/${this.slug}/${_file.name}`
+            )
+          ) {
+            fs.writeFileSync(
+              `${config?.dirPath}/resets/${this.slug}/${_file.name}`,
+              fileContent
+            );
+          }
         }
       }
 

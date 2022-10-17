@@ -94,7 +94,11 @@ export default class StartCommand extends SessionCommand {
 
       // listen to socket commands
       if (config && this.configManager) {
-        const server = await createServer(configObject, this.configManager);
+        const server = await createServer(
+          configObject,
+          this.configManager,
+          process.env.NODE_ENV === "test"
+        );
 
         const dispatcher = queue.dispatcher({
           create: true,
@@ -223,7 +227,7 @@ export default class StartCommand extends SessionCommand {
         setTimeout(() => dispatcher.enqueue(dispatcher.events.RUNNING), 1000);
 
         // start watching for file changes
-         
+
         if (StartCommand.flags.watch)
           this.configManager.watchIndex(_exercises =>
             socket.reload(null, _exercises)
