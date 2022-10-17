@@ -95,10 +95,35 @@ class AuditCommand extends SessionCommand {
         Console.debug(
           "Checking if the slug property is inside the configuration object..."
         );
+        // check if the slug property is in the configuration object
         if (!config!.config?.slug)
           errors.push({
             exercise: undefined,
             msg: "The slug property is not in the configuration object",
+          });
+        // check if the duration property is in the configuration object
+        if (!config!.config?.duration)
+          warnings.push({
+            exercise: undefined,
+            msg: "The duration property is not in the configuration object",
+          });
+        // check if the difficulty property is in the configuration object
+        if (!config!.config?.difficulty)
+          warnings.push({
+            exercise: undefined,
+            msg: "The difficulty property is not in the configuration object",
+          });
+        // check if the bugs_link property is in the configuration object
+        if (!config!.config?.bugs_link)
+          errors.push({
+            exercise: undefined,
+            msg: "The bugs_link property is not in the configuration object",
+          });
+        // check if the video_solutions property is in the configuration object
+        if (config!.config?.video_solutions === undefined)
+          warnings.push({
+            exercise: undefined,
+            msg: "The video_solutions property is not in the configuration object",
           });
 
         // These two lines check if the 'repository' property is inside the configuration object.
