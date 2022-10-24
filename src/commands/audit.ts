@@ -114,16 +114,16 @@ class AuditCommand extends SessionCommand {
             msg: "The difficulty property is not in the configuration object",
           });
         // check if the bugs_link property is in the configuration object
-        if (!config!.config?.bugs_link)
+        if (!config!.config?.bugsLink)
           errors.push({
             exercise: undefined,
-            msg: "The bugs_link property is not in the configuration object",
+            msg: "The bugsLink property is not in the configuration object",
           });
         // check if the video_solutions property is in the configuration object
-        if (config!.config?.video_solutions === undefined)
+        if (config!.config?.videoSolutions === undefined)
           warnings.push({
             exercise: undefined,
-            msg: "The video_solutions property is not in the configuration object",
+            msg: "The videoSolutions property is not in the configuration object",
           });
 
         // These two lines check if the 'repository' property is inside the configuration object.
