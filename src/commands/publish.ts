@@ -2,7 +2,7 @@ import { prompt } from "enquirer";
 import SessionCommand from "../utils/SessionCommand";
 import Console from "../utils/console";
 import api from "../utils/api";
-import { validURL } from "../utils/validators";
+import { validateBugsUrl, validURL } from "../utils/validators";
 
 // eslint-disable-next-line
 const fetch = require("node-fetch");
@@ -64,6 +64,21 @@ class PublishCommand extends SessionCommand {
       if (!validateResp.ok || validateResp.status !== 200) {
         throw new Error(
           `The specified repository URL on the configuration file does not exist or its private, only public repositories are allowed at the moment: ${configObject.config?.repository}`
+        );
+      }
+    }
+
+    if (!validateBugsUrl(configObject?.config?.bugsLink ?? "")) {
+      throw new Error(
+        "The package has a missing or invalid 'bugsLink' on the configuration file, it needs to be a Github URL"
+      );
+    } else {
+      const validateResp = await fetch(configObject.config?.bugsLink, {
+        method: "HEAD",
+      });
+      if (!validateResp.ok || validateResp.status !== 200) {
+        throw new Error(
+          `The specified bugs URL on the configuration file does not exist or it's unreachable: ${configObject.config?.bugsLink}`
         );
       }
     }
